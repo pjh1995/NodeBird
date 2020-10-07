@@ -11,3 +11,9 @@
 `col xs: 모바일 sm:태블릿 md:작은 데스크탑 `
 `한줄은 xs + sm + md = 24`
 `24 이상이면 다음줄`
+
+`<tag style={{width:10}}>`
+`{} !== {}`
+`리랜더링`
+
+`entd는 e.preventDefault(); 이미 적용 되어있음.`
