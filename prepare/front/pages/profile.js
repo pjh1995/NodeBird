@@ -2,8 +2,8 @@ import React from "react";
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 import NicknameEditForm from "../components/NicknameEditForm";
-import FollowingList from "../components/FollowingList";
-import FollowerList from "../components/FollowerList";
+import FollowList from "../components/FollowList";
+
 const Profile = () => {
   const followerList = [
     { nickname: "유저1" },
@@ -22,8 +22,8 @@ const Profile = () => {
       </Head>
       <AppLayout>
         <NicknameEditForm />
-        <FollowingList header="팔로잉 목록" data={followerList} />
-        <FollowerList header="팔로워 목록" data={followingList} />
+        <FollowList data={followerList} isfollower={false} />
+        <FollowList data={followingList} isfollower={true} />
       </AppLayout>
     </>
   );

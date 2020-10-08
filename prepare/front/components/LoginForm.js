@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import { Form, Input, Button } from "antd";
+import { Form, Button } from "antd";
 import Link from "next/link";
 import styled from "styled-components";
+import FormInput from "./FormInput";
+import useInput from "../hooks/useInput";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -13,16 +15,20 @@ const FormWrapper = styled(Form)`
 `;
 
 const LoginForm = ({ setIsLoggedIn }) => {
-  const [id, setId] = useState("");
+  const [id, onChangeId] = useInput("");
   const [password, setPassword] = useState("");
 
-  const onChangeId = useCallback((e) => {
-    setId(e.target.value);
-  }, []);
+  const errors = {
+    id: null,
+    password: null,
+  };
 
-  const onChangePassword = useCallback((e) => {
-    setPassword(e.target.value);
-  }, []);
+  const onChangePassword = useCallback(
+    (e) => {
+      setPassword(e.target.value);
+    },
+    [password]
+  );
 
   const onSubmitForm = useCallback(() => {
     //e.preventDefault(); 이미 적용 되어있음.
@@ -31,22 +37,20 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   return (
     <FormWrapper onFinish={onSubmitForm}>
-      <div>
-        <label htmlFor="user-id">아이디</label>
-        <br />
-        <Input name="user-id" value={id} onChange={onChangeId} required />
-      </div>
-      <div>
-        <label htmlFor="user-password">비밀번호</label>
-        <br />
-        <Input
-          name="user-password"
-          type="password"
-          value={password}
-          onChange={onChangePassword}
-          required
-        />
-      </div>
+      <FormInput
+        inputName="user-id"
+        labelText="아이디"
+        onChange={onChangeId}
+        value={id}
+      />
+      <FormInput
+        inputName="user-password"
+        labelText="비밀번호"
+        type="password"
+        onChange={onChangePassword}
+        error={errors.password}
+        value={password}
+      />
       <ButtonWrapper>
         <Button type="primary" htmlType="submit" loading={false}>
           로그인
