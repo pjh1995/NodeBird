@@ -4,18 +4,18 @@ import { Button, Card, List } from "antd";
 import { StopOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 
-const FollowListWrap = styled(List)`
-  margin-bottom: 20px;
-`;
+// const FollowListWrap = styled(List)`
+//   margin-bottom: 20px;
+// `;
 
-const loadMoreWrap = styled.div`
-  text-align: center;
-  margin: 10px 0;
-`;
+// const loadMoreWrap = styled.div`
+//   text-align: center;
+//   margin: 10px 0;
+// `;
 
-const ListItem = styled(List.Item)`
-  margin-top: 20px;
-`;
+// const ListItem = styled(List.Item)`
+//   margin-top: 20px;
+// `;
 
 const FollowList = ({ data, isfollower }) => {
   const header = <div>{isfollower ? "팔로워" : "팔로잉"}</div>;
@@ -23,14 +23,15 @@ const FollowList = ({ data, isfollower }) => {
 
   const loadMore = () => {
     return (
-      <loadMoreWrap>
+      <div style={{ textAlign: "center", magin: "10px 0" }}>
         <Button>더 보기</Button>
-      </loadMoreWrap>
+      </div>
     );
   };
 
   return (
-    <FollowListWrap
+    <List
+      style={{ marginBottom: "20px" }}
       grid={grid}
       size="small"
       header={header}
@@ -38,11 +39,11 @@ const FollowList = ({ data, isfollower }) => {
       bordered
       dataSource={data}
       renderItem={(item) => (
-        <ListItem>
+        <List.Item style={{ marginTop: "20px" }}>
           <Card actions={[<StopOutlined key="stop" />]}>
             <Card.Meta description={item.nickname} />
           </Card>
-        </ListItem>
+        </List.Item>
       )}
     />
   );

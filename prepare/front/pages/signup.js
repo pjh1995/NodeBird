@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import Head from "next/head";
 import { Form, Checkbox, Button } from "antd";
 
@@ -6,10 +6,6 @@ import FormInput from "../components/FormInput";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
 import styled from "styled-components";
-
-const ErrorMsg = styled.div`
-  color: red;
-`;
 
 const Signup = () => {
   const [id, onChangeId] = useInput("");
@@ -22,8 +18,13 @@ const Signup = () => {
     term: false,
   });
 
+  const ErrorMsgStyle = useMemo(() => {
+    return { color: "red" };
+  }, []);
+
   const onSubmit = useCallback(() => {
     console.log("submie");
+
     setErrors({
       password:
         password !== passwordCheck ? "패스워드가 일치하지 않습니다." : null,
@@ -85,7 +86,9 @@ const Signup = () => {
             약관 동의
           </Checkbox>
           {errors.term && (
-            <ErrorMsg>약관에 동의해야만 회원가입이 가능합니다.</ErrorMsg>
+            <div style={ErrorMsgStyle}>
+              약관에 동의해야만 회원가입이 가능합니다.
+            </div>
           )}
         </div>
         <div>

@@ -6,13 +6,12 @@ import styled from "styled-components";
 import FormInput from "./FormInput";
 import useInput from "../hooks/useInput";
 
-const ButtonWrapper = styled.div`
-  margin-top: 10px;
-`;
-
-const FormWrapper = styled(Form)`
-  padding: 10px;
-`;
+// const ButtonWrapper = styled.div`
+//   margin-top: 10px;
+// `;
+// const FormWrapper = styled(Form)`
+//   padding: 10px;
+// `;
 
 const LoginForm = ({ setIsLoggedIn }) => {
   const [id, onChangeId] = useInput("");
@@ -36,7 +35,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
   }, [id, password]);
 
   return (
-    <FormWrapper onFinish={onSubmitForm}>
+    <Form style={{ padding: "10px" }} onFinish={onSubmitForm}>
       <FormInput
         inputName="user-id"
         labelText="아이디"
@@ -51,15 +50,15 @@ const LoginForm = ({ setIsLoggedIn }) => {
         error={errors.password}
         value={password}
       />
-      <ButtonWrapper>
+      <div style={{ marginTop: "10px" }}>
         <Button type="primary" htmlType="submit" loading={false}>
           로그인
         </Button>
         <Link href="/signup">
           <a>회원가입</a>
         </Link>
-      </ButtonWrapper>
-    </FormWrapper>
+      </div>
+    </Form>
   );
 };
 

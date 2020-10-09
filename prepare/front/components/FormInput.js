@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { Input } from "antd";
 import styled from "styled-components";
 
-const ErrorMsg = styled.div`
-  color: red;
-`;
+// const ErrorMsg = styled.div`
+//   color: red;
+// `;
 
 const FormInput = ({
   inputName,
@@ -27,7 +27,7 @@ const FormInput = ({
         type={type}
         value={value}
       />
-      {error && <ErrorMsg>{error}</ErrorMsg>}
+      {error && <div style={{ color: "red" }}>{error}</div>}
     </div>
   );
 };
