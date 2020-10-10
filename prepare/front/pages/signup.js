@@ -13,39 +13,28 @@ const Signup = () => {
   const [password, onChangePassword] = useInput("");
   const [passwordCheck, onChangePasswordCheck] = useInput("");
   const [term, setTerm] = useState("");
-  const [errors, setErrors] = useState({
-    password: "패스워드가 일치하지 않습니다.",
-    term: false,
-  });
+  const [error, setError] = useState(null);
 
   const ErrorMsgStyle = useMemo(() => {
     return { color: "red" };
   }, []);
 
   const onSubmit = useCallback(() => {
-    console.log("submie");
-
-    setErrors({
-      password:
-        password !== passwordCheck ? "패스워드가 일치하지 않습니다." : null,
-      term: !term,
-    });
-    console.log(errors.password);
-    console.log(errors.term);
-    if (errors.password || errors.term) {
-      return;
+    setError("");
+    if (!id || !nickname || !password) {
+      setError("모든 값을 입력해주세요");
+    } else if (password !== passwordCheck) {
+      setError("패스워드가 일치하지 않습니다.");
+    } else if (!term) {
+      setError("약관에 동의해야만 회원가입이 가능합니다.");
     } else {
       alert("회원가입 완료~~!");
     }
-  }, [errors]);
+  }, [error]);
 
   const onChangeTerm = useCallback(
     (e) => {
       setTerm(e.target.checked);
-      setErrors({
-        password: errors.password,
-        term: !term,
-      });
     },
     [term]
   );
@@ -79,17 +68,12 @@ const Signup = () => {
           labelText="비밀번호 확인"
           onChange={onChangePasswordCheck}
           value={passwordCheck}
-          error={errors.password}
         />
         <div>
           <Checkbox name="user-term" onChange={onChangeTerm} checked={term}>
             약관 동의
           </Checkbox>
-          {errors.term && (
-            <div style={ErrorMsgStyle}>
-              약관에 동의해야만 회원가입이 가능합니다.
-            </div>
-          )}
+          {error && <div style={ErrorMsgStyle}>{error}</div>}
         </div>
         <div>
           <Button style={{ marginTop: 10 }} type="primary" htmlType="submit">
