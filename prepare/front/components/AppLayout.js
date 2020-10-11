@@ -14,7 +14,7 @@ const AppLayout = ({ children }) => {
         <Menu mode="horizontal">
           <Menu.Item>
             <Link href="/">
-              <a>노드버드</a>
+              <a>노드버드s</a>
             </Link>
           </Menu.Item>
           <Menu.Item>
