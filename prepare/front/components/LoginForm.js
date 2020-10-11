@@ -2,7 +2,8 @@ import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Button } from "antd";
 import Link from "next/link";
-import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../reducers/user";
 import FormInput from "./FormInput";
 import useInput from "../hooks/useInput";
 
@@ -13,7 +14,8 @@ import useInput from "../hooks/useInput";
 //   padding: 10px;
 // `;
 
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
   const [id, onChangeId] = useInput("");
   const [password, setPassword] = useState("");
 
@@ -31,7 +33,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   const onSubmitForm = useCallback(() => {
     //e.preventDefault(); 이미 적용 되어있음.
-    setIsLoggedIn(true);
+    dispatch(loginAction({ id, password }));
   }, [id, password]);
 
   return (
@@ -62,8 +64,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
   );
 };
 
-LoginForm.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired,
-};
+LoginForm.propTypes = {};
 
 export default LoginForm;

@@ -5,7 +5,6 @@ import { Form, Checkbox, Button } from "antd";
 import FormInput from "../components/FormInput";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
-import styled from "styled-components";
 
 const Signup = () => {
   const [id, onChangeId] = useInput("");
