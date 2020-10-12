@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 const PostImages = ({ images }) => {
   return (
     <div>
@@ -7,5 +9,12 @@ const PostImages = ({ images }) => {
       ))}
     </div>
   );
+};
+PostImages.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string,
+    })
+  ),
 };
 export default PostImages;

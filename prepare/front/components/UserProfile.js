@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import PropTypes from "prop-types";
 import { Card, Avatar, Button } from "antd";
 import { logoutAction } from "../reducers/user";
 import { useDispatch } from "react-redux";

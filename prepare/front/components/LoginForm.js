@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import PropTypes from "prop-types";
 import { Form, Button } from "antd";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
