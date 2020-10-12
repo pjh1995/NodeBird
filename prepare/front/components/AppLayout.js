@@ -6,6 +6,8 @@ import { useSelector } from "react-redux"; //react랑 redux를 이어줌
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
 
+const SearchInputStyle = { verticalAlign: "middle" };
+
 const AppLayout = ({ children }) => {
   const { isLoggedIn } = useSelector((state) => state.user);
   return (
@@ -23,7 +25,7 @@ const AppLayout = ({ children }) => {
             </Link>
           </Menu.Item>
           <Menu.Item>
-            <Input.Search style={{ verticalAlign: "middle" }} enterButton />
+            <Input.Search style={SearchInputStyle} enterButton />
           </Menu.Item>
           <Menu.Item>
             <Link href="/signup">

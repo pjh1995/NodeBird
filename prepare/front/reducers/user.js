@@ -1,5 +1,3 @@
-import { ACTION } from "./constants";
-
 export const initialState = {
   isLoggedIn: false,
   user: null,
@@ -7,28 +5,31 @@ export const initialState = {
   loginData: {},
 };
 
+const LOG_IN = "LOG_IN";
 export const loginAction = (data) => {
   return {
-    type: ACTION.LOG_IN,
+    type: LOG_IN,
     data,
   };
 };
+
+const LOG_OUT = "LOG_OUT";
 export const logoutAction = (data) => {
   return {
-    type: ACTION.LOG_OUT,
+    type: LOG_OUT,
     data,
   };
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ACTION.LOG_IN: {
+    case LOG_IN: {
       return {
         ...state,
         isLoggedIn: true,
       };
     }
-    case ACTION.LOG_OUT: {
+    case LOG_OUT: {
       return {
         ...state,
         isLoggedIn: false,
