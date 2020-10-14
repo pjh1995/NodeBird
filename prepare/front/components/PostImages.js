@@ -2,62 +2,39 @@ import React, { useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { PlusOutlined } from "@ant-design/icons";
 
-const PostImages = ({ images }) => {
+const PostImages = ({ images, content }) => {
   const [showImagesZoom, setShowImageszoom] = useState(false);
 
   const onZoom = useCallback(() => {
     setShowImageszoom(true);
   }, []);
 
-  if (images.length === 1) {
+  // eslint-disable-next-line react/prop-types
+  const Image = ({ src, width = 50 }) => {
     return (
-      <>
-        <img
-          role="presentation"
-          src={images[0].src}
-          alt={images[0].src}
-          onClick={onZoom}
-        />
-      </>
+      <img
+        role="presentation"
+        src={src}
+        alt={content}
+        width={`${width}%`}
+        height="100%"
+        onClick={onZoom}
+        style={{ width: `${width}%`, display: "inline-block" }}
+      />
     );
-  }
-  if (images.length === 2) {
-    return (
-      <>
-        <img
-          role="presentation"
-          width="50%"
-          src={images[0].src}
-          alt={images[0].src}
-          onClick={onZoom}
-        />
-        <img
-          role="presentation"
-          width="50%"
-          src={images[1].src}
-          alt={images[1].src}
-          onClick={onZoom}
-        />
-      </>
-    );
-  }
-  if (images.length === 2) {
-    return (
-      <>
-        <img
-          role="presentation"
-          width="50%"
-          src={images[0].src}
-          alt={images[0].src}
-          onClick={onZoom}
-        />
+  };
+  return (
+    <>
+      <Image src={images[0].src} width={images.length === 1 ? 100 : 50} />
+      {images.length === 2 && <Image src={images[1].src} />}
+      {images.length > 2 && (
         <div
           role="presentation"
           style={{
             display: "inline-block",
             width: "50%",
             textAlign: "center",
-            verticalAlign: "center",
+            verticalAlign: "middle",
           }}
           onClick={onZoom}
         >
@@ -66,22 +43,18 @@ const PostImages = ({ images }) => {
           {images.length - 1}
           개의 사진 더 보기
         </div>
-      </>
-    );
-  }
-  return (
-    <div>
-      {images.map((image, idx) => (
-        <img key={idx} src={image.src}></img>
-      ))}
-    </div>
+      )}
+    </>
   );
 };
+
 PostImages.propTypes = {
   images: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string,
     })
-  ),
+  ).isRequired,
+  content: PropTypes.string,
 };
+
 export default PostImages;
