@@ -1,10 +1,18 @@
 import { createWrapper } from "next-redux-wrapper";
 import { createStore, compose, applyMiddleware } from "redux"; //중앙 데이터 저장소 역할
 import { composeWithDevTools } from "redux-devtools-extension";
-import reducer from "../reducers";
+import createSagaMiddleWare from "redux-saga";
 
+import reducer from "../reducers";
+import rootSaga from "../saga";
+
+const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
+  console.log(action);
+  return next(action);
+};
 const configureStore = () => {
-  const middlewares = [];
+  const sageMiddleware = createSagaMiddleWare();
+  const middlewares = [sageMiddleware, loggerMiddleware];
   const enhancer =
     process.env.NODE_ENV === "production"
       ? compose(applyMiddleware(...middlewares))
@@ -12,6 +20,7 @@ const configureStore = () => {
   //composeWithDevTools redux chrome_extension을 사용가능. 보안문제 때문에 develop에서만 사용
   //applyMiddleware([]) --> TypeError: middleware is not a function
   const store = createStore(reducer, enhancer);
+  store.sagaTask = sageMiddleware.run(rootSaga);
   return store;
 };
 
