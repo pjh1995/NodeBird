@@ -5,6 +5,14 @@ import { combineReducers } from "redux";
 import user from "./user";
 import post from "./post";
 
+export function makeActionType(title) {
+  return {
+    REQUEST: `${title}_REQUEST`,
+    SUCCESS: `${title}_SUCCESS`,
+    FAILURE: `${title}_FAILURE`,
+  };
+}
+
 //(이전상태, 액션) => 다음상태
 const rootReducer = combineReducers({
   index: (state = {}, action) => {

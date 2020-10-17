@@ -1,10 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { Form, Button } from "antd";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { loginAction } from "../reducers/user";
+import { useDispatch, useSelector } from "react-redux";
+// import styled from "styled-components";
+
 import FormInput from "./FormInput";
 import useInput from "../hooks/useInput";
+import { loginRequestAction } from "../reducers/user";
 
 // const ButtonWrapper = styled.div`
 //   margin-top: 10px;
@@ -15,6 +17,7 @@ import useInput from "../hooks/useInput";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
+  const { isLoggingIn } = useSelector((state) => state.user);
   const [id, onChangeId] = useInput("");
   const [password, setPassword] = useState("");
 
@@ -32,11 +35,11 @@ const LoginForm = () => {
 
   const onSubmitForm = useCallback(() => {
     //e.preventDefault(); 이미 적용 되어있음.
-    dispatch(loginAction({ id, password }));
+    dispatch(loginRequestAction({ id, password }));
   }, [id, password]);
 
   return (
-    <Form style={{ padding: "10px" }} onFinish={onSubmitForm}>
+    <Form onFinish={onSubmitForm}>
       <FormInput
         inputName="user-id"
         labelText="아이디"
@@ -51,8 +54,8 @@ const LoginForm = () => {
         error={errors.password}
         value={password}
       />
-      <div style={{ marginTop: "10px" }}>
-        <Button type="primary" htmlType="submit" loading={false}>
+      <div>
+        <Button type="primary" htmlType="submit" loading={isLoggingIn}>
           로그인
         </Button>
         <Link href="/signup">
