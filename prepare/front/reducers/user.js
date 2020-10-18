@@ -1,13 +1,28 @@
 import { makeActionType } from "./index";
 
 export const initialState = {
-  isLoggingIn: false, //로그인 시도중
-  isLoggingOut: false, //로그아웃 시도중
-  isLoggedIn: false,
+  logInLoading: false, //로그인 시도중
+  logInDone: false,
+  logInError: null,
+  logOutLoading: false, //로그아웃 시도중
+  logOutDone: false,
+  logOutError: null,
+  signUpLoading: false, //회원가입 시도중
+  signUpDone: false,
+  signUpError: null,
   me: null,
   signUpData: {},
   loginData: {},
 };
+
+const dummyUser = (data) => ({
+  ...data,
+  nickname: "JHPARK",
+  id: 1,
+  Posts: [],
+  Followings: [],
+  Followers: [],
+});
 
 export const LOG_IN_TYPE = makeActionType("LOG_IN");
 
@@ -26,48 +41,84 @@ export const logoutRequestAction = (data) => {
   };
 };
 
+export const SIGN_UP_TYPE = makeActionType("SIGN_UP");
+export const signupRequestAction = (data) => {
+  return {
+    type: SIGN_UP_TYPE.REQUEST,
+    data,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case LOG_IN_TYPE.REQUEST: {
       console.log("reducer");
       return {
         ...state,
-        isLoggingIn: true,
+        logInLoading: true,
+        logInError: null,
+        logInDone: false,
       };
     }
     case LOG_IN_TYPE.SUCCESS: {
       return {
         ...state,
-        isLoggingIn: false,
-        isLoggedIn: true,
-        me: { ...action.data, nickname: "JHPARK" },
+        logInLoading: false,
+        logInDone: true,
+        me: dummyUser(action.data),
       };
     }
     case LOG_IN_TYPE.FAILURE: {
       return {
         ...state,
-        isLoggedIn: true,
-        me: action.data,
+        logInLoading: false,
+        logInError: action.error,
       };
     }
     case LOG_OUT_TYPE.REQUEST: {
       return {
         ...state,
-        isLoggingIn: true,
+        logOutLoading: true,
+        logOutDone: false,
+        logOutError: null,
       };
     }
     case LOG_OUT_TYPE.SUCCESS: {
       return {
         ...state,
-        isLoggingOut: false,
-        isLoggedIn: false,
+        logOutLoading: false,
+        logOutDone: true,
+        logInDone: false,
         me: null,
       };
     }
     case LOG_OUT_TYPE.FAILURE: {
       return {
         ...state,
-        isLoggingIn: false,
+        logOutLoading: false,
+        logOutError: action.error,
+      };
+    }
+    case SIGN_UP_TYPE.REQUEST: {
+      return {
+        ...state,
+        signUpLoading: true,
+        signUpDone: false,
+        signUpError: null,
+      };
+    }
+    case SIGN_UP_TYPE.SUCCESS: {
+      return {
+        ...state,
+        signUpLoading: false,
+        signUpDone: true,
+      };
+    }
+    case SIGN_UP_TYPE.FAILURE: {
+      return {
+        ...state,
+        signUpLoading: false,
+        signUpError: action.error,
       };
     }
     default:
@@ -76,3 +127,6 @@ const reducer = (state = initialState, action) => {
 };
 
 export default reducer;
+
+//switch문 쪼개기,
+//type loading,done,err 합치기?
