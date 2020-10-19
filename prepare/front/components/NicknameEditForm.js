@@ -1,6 +1,6 @@
-import { Input, Form } from "antd";
-import styled from "styled-components";
-import React, { useMemo } from "react";
+import { Input, Form } from 'antd';
+// import styled from "styled-components";
+import React, { useMemo } from 'react';
 
 // const NicknameForm = styled(Form)`
 //   margin-bottom: 20px;
@@ -10,9 +10,9 @@ import React, { useMemo } from "react";
 
 const NicknameFormStyle = useMemo(() => {
   return {
-    marginBottom: "20px",
-    border: "1px solid #d9d9d9",
-    padding: "10px",
+    marginBottom: '20px',
+    border: '1px solid #d9d9d9',
+    padding: '10px',
   };
 }, []);
 

@@ -1,41 +1,49 @@
-import React, { useCallback, useState, useMemo } from "react";
-import Head from "next/head";
-import { Form, Checkbox, Button } from "antd";
+import React, { useCallback, useState, useMemo } from 'react';
+import Head from 'next/head';
+import { Form, Checkbox, Button } from 'antd';
 
-import FormInput from "../components/FormInput";
-import AppLayout from "../components/AppLayout";
-import useInput from "../hooks/useInput";
+import { useDispatch, useSelector } from 'react-redux';
+import FormInput from '../components/FormInput';
+import AppLayout from '../components/AppLayout';
+import useInput from '../hooks/useInput';
+import { SIGN_UP_TYPE } from '../reducers/user';
 
 const Signup = () => {
-  const [id, onChangeId] = useInput("");
-  const [nickname, onChangeNickname] = useInput("");
-  const [password, onChangePassword] = useInput("");
-  const [passwordCheck, onChangePasswordCheck] = useInput("");
-  const [term, setTerm] = useState("");
+  const dispatch = useDispatch();
+  const { signUpLoading } = useSelector((state) => state.user);
+
+  const [email, onChangeEmail] = useInput('');
+  const [nickname, onChangeNickname] = useInput('');
+  const [password, onChangePassword] = useInput('');
+  const [passwordCheck, onChangePasswordCheck] = useInput('');
+  const [term, setTerm] = useState('');
   const [error, setError] = useState(null);
 
   const ErrorMsgStyle = useMemo(() => {
-    return { color: "red" };
+    return { color: 'red' };
   }, []);
 
   const onSubmit = useCallback(() => {
-    setError("");
-    if (!id || !nickname || !password) {
-      setError("모든 값을 입력해주세요");
+    setError('');
+    if (!email || !nickname || !password) {
+      setError('모든 값을 입력해주세요');
     } else if (password !== passwordCheck) {
-      setError("패스워드가 일치하지 않습니다.");
+      setError('패스워드가 일치하지 않습니다.');
     } else if (!term) {
-      setError("약관에 동의해야만 회원가입이 가능합니다.");
+      setError('약관에 동의해야만 회원가입이 가능합니다.');
     } else {
-      alert("회원가입 완료~~!");
+      dispatch({
+        type: SIGN_UP_TYPE.REQUEST,
+        data: { email, password, nickname },
+      });
     }
-  }, [error]);
+  }, [email, password, passwordCheck, term]);
 
   const onChangeTerm = useCallback(
     (e) => {
       setTerm(e.target.checked);
     },
-    [term]
+    [term],
   );
 
   return (
@@ -45,10 +53,11 @@ const Signup = () => {
       </Head>
       <Form onFinish={onSubmit}>
         <FormInput
-          inputName="user-id"
-          labelText="아이디"
-          onChange={onChangeId}
-          value={id}
+          inputName="user-email"
+          type={email}
+          labelText="이메일"
+          onChange={onChangeEmail}
+          value={email}
         />
         <FormInput
           inputName="user-nickname"
@@ -75,7 +84,12 @@ const Signup = () => {
           {error && <div style={ErrorMsgStyle}>{error}</div>}
         </div>
         <div>
-          <Button style={{ marginTop: 10 }} type="primary" htmlType="submit">
+          <Button
+            style={{ marginTop: 10 }}
+            type="primary"
+            htmlType="submit"
+            loading={signUpLoading}
+          >
             가입하기
           </Button>
         </div>
@@ -83,6 +97,6 @@ const Signup = () => {
     </AppLayout>
   );
 };
-//회원가입 기능 이상해..!
+// 회원가입 기능 이상해..!
 
 export default Signup;

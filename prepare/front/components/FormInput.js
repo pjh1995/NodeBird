@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Input } from "antd";
-import styled from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Input } from 'antd';
+// import styled from "styled-components";
 
 // const ErrorMsg = styled.div`
 //   color: red;
@@ -11,9 +11,9 @@ const FormInput = ({
   inputName,
   labelText,
   onChange,
-  type = "text",
+  type = 'text',
   value,
-  isrequire = "true",
+  isrequire = 'true',
   error,
 }) => {
   return (
@@ -27,7 +27,7 @@ const FormInput = ({
         type={type}
         value={value}
       />
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
     </div>
   );
 };

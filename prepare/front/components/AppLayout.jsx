@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Link from "next/link";
-import { Menu, Input, Row, Col } from "antd";
-import { useSelector } from "react-redux"; //react랑 redux를 이어줌
-import { createGlobalStyle } from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Link from 'next/link';
+import { Menu, Input, Row, Col } from 'antd';
+import { useSelector } from 'react-redux'; // react랑 redux를 이어줌
+import { createGlobalStyle } from 'styled-components';
 
-import UserProfile from "./UserProfile";
-import LoginForm from "./LoginForm";
+import UserProfile from './UserProfile';
+import LoginForm from './LoginForm';
 
-const SearchInputStyle = { verticalAlign: "middle" };
+const SearchInputStyle = { verticalAlign: 'middle' };
 
 const Global = createGlobalStyle`
   .ant-row {
@@ -24,7 +24,7 @@ const Global = createGlobalStyle`
 `;
 
 const AppLayout = ({ children }) => {
-  const { logInDone } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
   return (
     <>
       <div>
@@ -51,7 +51,7 @@ const AppLayout = ({ children }) => {
         </Menu>
         <Row gutter={8}>
           <Col xs={24} md={6}>
-            {logInDone ? <UserProfile /> : <LoginForm />}
+            {me ? <UserProfile /> : <LoginForm />}
             왼쪽 메뉴
           </Col>
           <Col xs={24} md={12}>

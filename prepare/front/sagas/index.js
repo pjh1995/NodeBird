@@ -8,10 +8,10 @@ import {
   // takeLatest,
   // throttle,
   // delay,
-} from "redux-saga/effects";
+} from 'redux-saga/effects';
 
-import postSaga from "./post";
-import userSaga from "./user";
+import postSaga from './post';
+import userSaga from './user';
 
 //put === dispatch
 
@@ -26,13 +26,13 @@ import userSaga from "./user";
 //all addListner
 
 //throttleing :: 마지막 함수가 호출 된 후 쿨타임을 줌 === throttle
-//debouncing :: 연이어 호출되는 함수들 중 마지막(또는 맨 처음) 함수만 호출하는 것 == takeLastest,takeLeading(얘넨 호출은 함, 응답을 막음)
+//debouncing :: 연이어 호출되는 함수들 중 마지막(또는 맨 처음) 함수만 호출하는 것 == takeLatest,takeLeading(얘넨 호출은 함, 응답을 막음)
 
 // const l = login({ type: "LOGIN_IN_REQUEST", data: { id: "jhpark@gmail.com" } });
 // l.next();1
 // test하기에 최고
 
 export default function* rootSaga() {
-  console.log("rootSaga");
+  console.log('rootSaga');
   yield all([fork(postSaga), fork(userSaga)]);
 }

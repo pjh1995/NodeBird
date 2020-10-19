@@ -1,7 +1,7 @@
-import { all, fork, put, takeLastest } from "redux-saga/effects";
+import { all, fork, put, takeLatest } from 'redux-saga/effects';
 // import axios from "axios";
 
-import { ADD_POST_TYPE, ADD_COMMENT_TYPE } from "../reducers/post";
+import { ADD_POST_TYPE, ADD_COMMENT_TYPE } from '../reducers/post';
 
 // function addPostAPI(data) {
 //   return axios.post("/api/login", data);
@@ -23,7 +23,7 @@ function* addPost(action) {
 }
 
 function* watchAddPost() {
-  yield takeLastest(ADD_POST_TYPE.REQUEST, addPost);
+  yield takeLatest(ADD_POST_TYPE.REQUEST, addPost);
 }
 
 function* addComment(action) {
@@ -42,7 +42,7 @@ function* addComment(action) {
 }
 
 function* watchAddComment() {
-  yield takeLastest(ADD_COMMENT_TYPE.REQUEST, addComment);
+  yield takeLatest(ADD_COMMENT_TYPE.REQUEST, addComment);
 }
 
 export default function* postSaga() {

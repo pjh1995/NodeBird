@@ -1,12 +1,12 @@
-import React, { useCallback, useState } from "react";
-import { Form, Button } from "antd";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback, useState } from 'react';
+import { Form, Button } from 'antd';
+import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
 // import styled from "styled-components";
 
-import FormInput from "./FormInput";
-import useInput from "../hooks/useInput";
-import { loginRequestAction } from "../reducers/user";
+import FormInput from './FormInput';
+import useInput from '../hooks/useInput';
+import { loginRequestAction } from '../reducers/user';
 
 // const ButtonWrapper = styled.div`
 //   margin-top: 10px;
@@ -18,11 +18,11 @@ import { loginRequestAction } from "../reducers/user";
 const LoginForm = () => {
   const dispatch = useDispatch();
   const { logInLoading } = useSelector((state) => state.user);
-  const [id, onChangeId] = useInput("");
-  const [password, setPassword] = useState("");
+  const [email, onChangeEmail] = useInput('');
+  const [password, setPassword] = useState('');
 
   const errors = {
-    id: null,
+    email: null,
     password: null,
   };
 
@@ -30,21 +30,21 @@ const LoginForm = () => {
     (e) => {
       setPassword(e.target.value);
     },
-    [password]
+    [password],
   );
 
   const onSubmitForm = useCallback(() => {
-    //e.preventDefault(); 이미 적용 되어있음.
-    dispatch(loginRequestAction({ id, password }));
-  }, [id, password]);
+    dispatch(loginRequestAction({ email, password }));
+  }, [email, password]);
 
   return (
     <Form onFinish={onSubmitForm}>
       <FormInput
-        inputName="user-id"
-        labelText="아이디"
-        onChange={onChangeId}
-        value={id}
+        inputName="user-email"
+        type="email"
+        labelText="이메일"
+        onChange={onChangeEmail}
+        value={email}
       />
       <FormInput
         inputName="user-password"

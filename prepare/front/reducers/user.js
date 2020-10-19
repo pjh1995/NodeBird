@@ -1,13 +1,13 @@
-import { makeActionType } from "./index";
+import { makeActionType } from './index';
 
 export const initialState = {
-  logInLoading: false, //로그인 시도중
+  logInLoading: false, // 로그인 시도중
   logInDone: false,
   logInError: null,
-  logOutLoading: false, //로그아웃 시도중
+  logOutLoading: false, // 로그아웃 시도중
   logOutDone: false,
   logOutError: null,
-  signUpLoading: false, //회원가입 시도중
+  signUpLoading: false, // 회원가입 시도중
   signUpDone: false,
   signUpError: null,
   me: null,
@@ -17,14 +17,14 @@ export const initialState = {
 
 const dummyUser = (data) => ({
   ...data,
-  nickname: "JHPARK",
+  nickname: 'JHPARK',
   id: 1,
   Posts: [],
   Followings: [],
   Followers: [],
 });
 
-export const LOG_IN_TYPE = makeActionType("LOG_IN");
+export const LOG_IN_TYPE = makeActionType('LOG_IN');
 
 export const loginRequestAction = (data) => {
   return {
@@ -33,7 +33,7 @@ export const loginRequestAction = (data) => {
   };
 };
 
-export const LOG_OUT_TYPE = makeActionType("LOG_OUT");
+export const LOG_OUT_TYPE = makeActionType('LOG_OUT');
 export const logoutRequestAction = (data) => {
   return {
     type: LOG_OUT_TYPE.REQUEST,
@@ -41,7 +41,7 @@ export const logoutRequestAction = (data) => {
   };
 };
 
-export const SIGN_UP_TYPE = makeActionType("SIGN_UP");
+export const SIGN_UP_TYPE = makeActionType('SIGN_UP');
 export const signupRequestAction = (data) => {
   return {
     type: SIGN_UP_TYPE.REQUEST,
@@ -52,7 +52,7 @@ export const signupRequestAction = (data) => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case LOG_IN_TYPE.REQUEST: {
-      console.log("reducer");
+      console.log('reducer');
       return {
         ...state,
         logInLoading: true,
@@ -88,7 +88,6 @@ const reducer = (state = initialState, action) => {
         ...state,
         logOutLoading: false,
         logOutDone: true,
-        logInDone: false,
         me: null,
       };
     }
@@ -128,5 +127,5 @@ const reducer = (state = initialState, action) => {
 
 export default reducer;
 
-//switch문 쪼개기,
-//type loading,done,err 합치기?
+// switch문 쪼개기,
+// type loading,done,err 합치기?
