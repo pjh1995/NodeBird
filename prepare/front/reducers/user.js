@@ -1,3 +1,4 @@
+import shortid from 'shortid';
 import { makeActionType } from './index';
 
 export const initialState = {
@@ -10,6 +11,9 @@ export const initialState = {
   signUpLoading: false, // 회원가입 시도중
   signUpDone: false,
   signUpError: null,
+  changeNicknameLoading: false, // 낙네암 변경 시도중
+  changeNicknameDone: false,
+  changeNicknameError: null,
   me: null,
   signUpData: {},
   loginData: {},
@@ -45,6 +49,14 @@ export const SIGN_UP_TYPE = makeActionType('SIGN_UP');
 export const signupRequestAction = (data) => {
   return {
     type: SIGN_UP_TYPE.REQUEST,
+    data,
+  };
+};
+
+export const CHANGE_NICKNAME_TYPE = makeActionType('CHANGE_NICKNAME');
+export const changeNicknameRequestAction = (data) => {
+  return {
+    type: CHANGE_NICKNAME_TYPE.REQUEST,
     data,
   };
 };
@@ -101,19 +113,41 @@ const reducer = (state = initialState, action) => {
     case SIGN_UP_TYPE.REQUEST: {
       return {
         ...state,
+        changeNicknameLoading: true,
+        changeNicknameDone: false,
+        changeNicknameError: null,
+      };
+    }
+    case SIGN_UP_TYPE.SUCCESS: {
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameDone: true,
+      };
+    }
+    case SIGN_UP_TYPE.FAILURE: {
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameError: action.error,
+      };
+    }
+    case CHANGE_NICKNAME_TYPE.REQUEST: {
+      return {
+        ...state,
         signUpLoading: true,
         signUpDone: false,
         signUpError: null,
       };
     }
-    case SIGN_UP_TYPE.SUCCESS: {
+    case CHANGE_NICKNAME_TYPE.SUCCESS: {
       return {
         ...state,
         signUpLoading: false,
         signUpDone: true,
       };
     }
-    case SIGN_UP_TYPE.FAILURE: {
+    case CHANGE_NICKNAME_TYPE.FAILURE: {
       return {
         ...state,
         signUpLoading: false,
