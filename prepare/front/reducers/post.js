@@ -49,6 +49,9 @@ export const initialState = {
   addPostDone: false,
   addPostLoading: false,
   addPostError: null,
+  removePostDone: false,
+  removePostLoading: false,
+  removePostError: null,
   addCommentDone: false,
   addCommentLoading: false,
   addCommentError: null,
@@ -59,6 +62,15 @@ export const ADD_POST_TYPE = makeActionType('ADD_POST');
 export const addPostAction = (data) => {
   return {
     type: ADD_POST_TYPE.REQUEST,
+    data,
+  };
+};
+
+export const REMOVE_POST_TYPE = makeActionType('REMOVE_POST');
+
+export const removePostAction = (data) => {
+  return {
+    type: REMOVE_POST_TYPE.REQUEST,
     data,
   };
 };
@@ -114,6 +126,29 @@ const reducer = (state = initialState, action) => {
         ...state,
         addPostLoading: false,
         addPostError: action.error,
+      };
+    }
+    case REMOVE_POST_TYPE.REQUEST: {
+      return {
+        ...state,
+        removePostLoading: true,
+        removePostDone: false,
+        removePostError: null,
+      };
+    }
+    case REMOVE_POST_TYPE.SUCCESS: {
+      return {
+        ...state,
+        mainPosts: state.mainPosts.filter((v) => v.id !== action.data),
+        removePostLoading: false,
+        removePostDone: true,
+      };
+    }
+    case REMOVE_POST_TYPE.FAILURE: {
+      return {
+        ...state,
+        removePostLoading: false,
+        removePostError: action.error,
       };
     }
     case ADD_COMMENT_TYPE.REQUEST: {
