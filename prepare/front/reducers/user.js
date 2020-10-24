@@ -21,7 +21,7 @@ export const initialState = {
 
 const dummyUser = (data) => ({
   ...data,
-  nickname: 'JHPARK',
+  nickname: 'jhpark',
   id: 1,
   Posts: [],
   Followings: [],
@@ -60,6 +60,9 @@ export const changeNicknameRequestAction = (data) => {
     data,
   };
 };
+
+export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
+export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -152,6 +155,20 @@ const reducer = (state = initialState, action) => {
         ...state,
         signUpLoading: false,
         signUpError: action.error,
+      };
+    }
+    case ADD_POST_TO_ME: {
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: [
+            {
+              id: action.data,
+            },
+            ...state.me.Posts,
+          ],
+        },
       };
     }
     default:

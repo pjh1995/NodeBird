@@ -1,7 +1,9 @@
 import { all, fork, put, takeLatest } from 'redux-saga/effects';
 // import axios from "axios";
+import shortid from 'shortid';
 
 import { ADD_POST_TYPE, ADD_COMMENT_TYPE } from '../reducers/post';
+import { ADD_POST_TO_ME } from '../reducers/user';
 
 // function addPostAPI(data) {
 //   return axios.post("/api/login", data);
@@ -10,9 +12,17 @@ import { ADD_POST_TYPE, ADD_COMMENT_TYPE } from '../reducers/post';
 function* addPost(action) {
   try {
     // const result = yield call(addPostAPI, action.data);
+    const id = shortid.generate();
     yield put({
       type: ADD_POST_TYPE.SUCCESS,
-      data: action.data,
+      data: {
+        id,
+        content: action.data,
+      },
+    });
+    yield put({
+      type: ADD_POST_TO_ME,
+      data: id,
     });
   } catch (err) {
     yield put({

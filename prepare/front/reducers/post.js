@@ -72,13 +72,13 @@ export const addCommentAction = (data) => {
   };
 };
 
-const dummyPost = (content) => ({
-  id: shortId.generate(),
+const dummyPost = (data) => ({
+  id: data.id,
   User: {
     id: 1,
     nickname: 'jhark',
   },
-  content,
+  content: data.content,
   Images: [],
   Comments: [],
 });
@@ -104,7 +104,7 @@ const reducer = (state = initialState, action) => {
     case ADD_POST_TYPE.SUCCESS: {
       return {
         ...state,
-        mainPosts: [dummyPost(action.data.content), ...state.mainPosts],
+        mainPosts: [dummyPost(action.data), ...state.mainPosts],
         addPostLoading: false,
         addPostDone: true,
       };
