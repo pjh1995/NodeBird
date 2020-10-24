@@ -134,6 +134,7 @@ const reducer = (state = initialState, action) => {
 
       return {
         ...state,
+        mainPosts,
         addCommentLoading: false,
         addCommentDone: true,
       };

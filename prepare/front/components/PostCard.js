@@ -16,8 +16,8 @@ import PostCardContent from './PostCardContent';
 const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [commentFormOpend, setCommentFormOpend] = useState(false);
-
-  const id = useSelector((state) => state.user.me?.id); // me && me.id; Optional chaining
+  const { me } = useSelector((state) => state.user);
+  const id = me?.id;
 
   const onToggleLike = useCallback(() => {
     setLiked((prev) => !prev);
@@ -72,7 +72,7 @@ const PostCard = ({ post }) => {
       </Card>
       {commentFormOpend && (
         <div>
-          <CommentForm post={post} />
+          {me && <CommentForm post={post} />}
           <List
             header={`${post.Comments.length}개의 댓글`}
             itemLayout="horizontal"
