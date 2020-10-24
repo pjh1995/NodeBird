@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Link from "next/link";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Link from 'next/link';
 
 const hashTagReg = /(#[^\s#]+)/g;
 const PostCardContent = ({ postData }) => {
@@ -13,6 +13,8 @@ const PostCardContent = ({ postData }) => {
               <a>{v}</a>
             </Link>
           );
+        } else {
+          return v;
         }
       })}
     </div>

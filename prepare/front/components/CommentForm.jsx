@@ -34,7 +34,7 @@ const CommentForm = ({ post }) => {
           row={4}
         />
         <Button type="primary" htmlType="submit">
-          삐약{post}
+          삐약
           {id}
         </Button>
       </Form.Item>
@@ -44,7 +44,7 @@ const CommentForm = ({ post }) => {
 
 CommentForm.propTypes = {
   post: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     User: PropTypes.shape({
       id: PropTypes.number,
       nickname: PropTypes.string,
