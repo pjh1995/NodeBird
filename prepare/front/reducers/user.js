@@ -14,6 +14,12 @@ export const initialState = {
   changeNicknameLoading: false, // 낙네암 변경 시도중
   changeNicknameDone: false,
   changeNicknameError: null,
+  unfollowLoading: false, // 낙네암 변경 시도중
+  unfollowDone: false,
+  unfollowError: null,
+  followLoading: false, // 낙네암 변경 시도중
+  followDone: false,
+  followError: null,
   me: null,
   signUpData: {},
   loginData: {},
@@ -29,7 +35,6 @@ const dummyUser = (data) => ({
 });
 
 export const LOG_IN_TYPE = makeActionType('LOG_IN');
-
 export const loginRequestAction = (data) => {
   return {
     type: LOG_IN_TYPE.REQUEST,
@@ -57,6 +62,22 @@ export const CHANGE_NICKNAME_TYPE = makeActionType('CHANGE_NICKNAME');
 export const changeNicknameRequestAction = (data) => {
   return {
     type: CHANGE_NICKNAME_TYPE.REQUEST,
+    data,
+  };
+};
+
+export const UNFOLLOW_TYPE = makeActionType('UNFOLLOW');
+export const unfollowRequestAction = (data) => {
+  return {
+    type: UNFOLLOW_TYPE.REQUEST,
+    data,
+  };
+};
+
+export const FOLLOW_TYPE = makeActionType('FOLLOW');
+export const followRequestAction = (data) => {
+  return {
+    type: FOLLOW_TYPE.REQUEST,
     data,
   };
 };
@@ -131,6 +152,42 @@ const reducer = (state = initialState, action) => {
       case CHANGE_NICKNAME_TYPE.FAILURE: {
         draft.changeNicknameLoading = false;
         draft.changeNicknameError = action.error;
+        break;
+      }
+      case UNFOLLOW_TYPE.REQUEST: {
+        draft.unfollowLoading = true;
+        draft.unfollowDone = false;
+        draft.unfollowError = null;
+        break;
+      }
+      case UNFOLLOW_TYPE.SUCCESS: {
+        draft.unfollowLoading = false;
+        draft.me.Followings = draft.me.Followings.filter(
+          (v) => v.id !== action.data,
+        );
+        draft.unfollowDone = true;
+        break;
+      }
+      case UNFOLLOW_TYPE.FAILURE: {
+        draft.unfollowLoading = false;
+        draft.unfollowError = action.error;
+        break;
+      }
+      case FOLLOW_TYPE.REQUEST: {
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+      }
+      case FOLLOW_TYPE.SUCCESS: {
+        draft.followLoading = false;
+        draft.me.Followings.push({ id: action.data });
+        draft.followDone = true;
+        break;
+      }
+      case FOLLOW_TYPE.FAILURE: {
+        draft.followLoading = false;
+        draft.followError = action.error;
         break;
       }
       case ADD_POST_TO_ME: {

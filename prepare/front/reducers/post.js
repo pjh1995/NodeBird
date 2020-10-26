@@ -49,8 +49,6 @@ export const generateDummyPost = (number) => {
     }));
 };
 
-initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
-
 export const LOAD_POSTS_TYPE = makeActionType('LOAD_POSTS');
 
 export const loadPostsAction = (data) => {

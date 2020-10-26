@@ -8,7 +8,9 @@ import { LOAD_POSTS_TYPE } from '../reducers/post';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+    (state) => state.post,
+  );
 
   useEffect(() => {
     dispatch({
@@ -18,22 +20,18 @@ const Home = () => {
 
   useEffect(() => {
     function onScroll() {
-      console.log(
-        window.screenY,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight,
-      );
       if (
-        hasMorePosts &&
-        window.screenY + document.documentElement.clientHeight ===
-          document.documentElement.scrollHeight
+        window.scrollY + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
       ) {
-        dispatch({
-          type: LOAD_POSTS_TYPE.REQUEST,
-        });
+        if (hasMorePosts && !loadPostsLoading) {
+          dispatch({
+            type: LOAD_POSTS_TYPE.REQUEST,
+          });
+        }
       }
     }
-    window.addEventListener('scroll'.onScroll);
+    window.addEventListener('scroll', onScroll);
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
