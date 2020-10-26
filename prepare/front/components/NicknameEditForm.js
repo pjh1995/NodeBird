@@ -8,15 +8,15 @@ import React, { useMemo } from 'react';
 //   padding: 10px;
 // `;
 
-const NicknameFormStyle = useMemo(() => {
-  return {
-    marginBottom: '20px',
-    border: '1px solid #d9d9d9',
-    padding: '10px',
-  };
-}, []);
-
 const NicknameEditForm = () => {
+  const NicknameFormStyle = useMemo(() => {
+    return {
+      marginBottom: '20px',
+      border: '1px solid #d9d9d9',
+      padding: '10px',
+    };
+  }, []);
+
   return (
     <Form style={NicknameFormStyle}>
       <Input.Search addonBefore="닉네임" enterButton="수정" />
