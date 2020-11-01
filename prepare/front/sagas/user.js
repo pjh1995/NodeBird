@@ -1,5 +1,6 @@
-import { all, fork, put, takeLatest, delay } from 'redux-saga/effects';
-// import axios from "axios";
+import { all, fork, put, takeLatest, delay, call } from 'redux-saga/effects';
+import axios from 'axios';
+
 import {
   LOG_IN_TYPE,
   LOG_OUT_TYPE,
@@ -8,18 +9,16 @@ import {
   FOLLOW_TYPE,
 } from '../reducers/user';
 
-// function logInAPI(data) {
-//   //   return axios.post("/api/login", data);
-// }
+function logInAPI(data) {
+  return axios.post('/user/login', data);
+}
 
 function* logIn(action) {
   try {
-    console.log('saga login');
-    // const result = yield call(logInAPI, action.data); 서버 생기기 전까지 우선 주석
-    yield delay(1000);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_TYPE.SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -35,7 +34,7 @@ function* logIn(action) {
 
 function* logOut() {
   try {
-    //const result = yield call(logOutAPI);
+    // const result = yield call(logOutAPI);
     // const result = logOutAPI;
     yield delay(1000);
     yield put({
@@ -50,16 +49,19 @@ function* logOut() {
   }
 }
 
+function signUpAPI(data) {
+  return axios.post('/user', data);
+}
+
 function* signUp(action) {
   try {
-    //const result = yield call(logOutAPI);
-    // const result = logOutAPI;
-    yield delay(1000);
+    const result = yield call(signUpAPI, action.data);
+    console.log(result);
     yield put({
       type: SIGN_UP_TYPE.SUCCESS,
-      data: action.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: SIGN_UP_TYPE.FAILURE,
       error: err.response.data,
@@ -69,7 +71,7 @@ function* signUp(action) {
 
 function* follow(action) {
   try {
-    //const result = yield call(logOutAPI);
+    // const result = yield call(logOutAPI);
     // const result = logOutAPI;
     yield delay(1000);
     yield put({
@@ -86,7 +88,7 @@ function* follow(action) {
 
 function* unfollow(action) {
   try {
-    //const result = yield call(logOutAPI);
+    // const result = yield call(logOutAPI);
     // const result = logOutAPI;
     yield delay(1000);
     yield put({

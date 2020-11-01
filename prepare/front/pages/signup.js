@@ -1,16 +1,33 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import Head from 'next/head';
 import { Form, Checkbox, Button } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
+import Router from 'next/router';
+
 import FormInput from '../components/FormInput';
 import AppLayout from '../components/AppLayout';
+
 import useInput from '../hooks/useInput';
 import { SIGN_UP_TYPE } from '../reducers/user';
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, sighUpError } = useSelector(
+    (state) => state.user,
+  );
+
+  useEffect(() => {
+    if (signUpDone) {
+      Router.push('/');
+    }
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (sighUpError) {
+      alert(sighUpError);
+    }
+  }, [sighUpError]);
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');

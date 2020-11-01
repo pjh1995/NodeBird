@@ -30,6 +30,7 @@
     "import/no-cycle": "off",
     "operator-linebreak": "off",
     "react/jsx-wrap-multilines": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-alert": "off"
   }
 }
