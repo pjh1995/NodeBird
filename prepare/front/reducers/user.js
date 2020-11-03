@@ -25,15 +25,6 @@ export const initialState = {
   loginData: {},
 };
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: 'jhpark',
-  id: 1,
-  Posts: [],
-  Followings: [],
-  Followers: [],
-});
-
 export const LOG_IN_TYPE = makeActionType('LOG_IN');
 export const loginRequestAction = (data) => {
   return {
@@ -96,8 +87,8 @@ const reducer = (state = initialState, action) => {
       }
       case LOG_IN_TYPE.SUCCESS: {
         draft.logInLoading = false;
+        draft.me = action.data;
         draft.logInDone = true;
-        draft.me = dummyUser(action.data);
         break;
       }
       case LOG_IN_TYPE.FAILURE: {
