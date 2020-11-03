@@ -13,9 +13,15 @@ import { SIGN_UP_TYPE } from '../reducers/user';
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading, signUpDone, sighUpError } = useSelector(
+  const { signUpLoading, signUpDone, sighUpError, me } = useSelector(
     (state) => state.user,
   );
+
+  useEffect(() => {
+    if (me && me.id) {
+      Router.push('/');
+    }
+  }, [me && me.id]);
 
   useEffect(() => {
     if (signUpDone) {
