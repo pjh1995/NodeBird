@@ -33,7 +33,7 @@ router.post('/', async (req, res, next) => {
       },
     });
     if (exUser) {
-      return res.status(403).send('이미 사용중인 아이디입니다.');
+      return res.status(403).send('이미 사용중인 아이디입니다');
     }
     await User.create({
       email,
