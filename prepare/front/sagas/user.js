@@ -70,7 +70,7 @@ function* signUp(action) {
 function* follow(action) {
   try {
     // const result = yield call(logOutAPI);
-    // const result = logOutAPI;
+    // const result = logOutAPI;;
     yield delay(1000);
     yield put({
       type: FOLLOW_TYPE.SUCCESS,
