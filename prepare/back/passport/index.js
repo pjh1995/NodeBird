@@ -5,13 +5,14 @@ const { User } = require('../models');
 module.exports = () => {
   passport.serializeUser((user, done) => {
     if (user) {
-      done(null, user.id);
+      return done(null, user.id);
     }
     done('user null');
   });
+
   passport.deserializeUser(async (id, done) => {
     try {
-      await User.findOne({ where: { id } });
+      const user = await User.findOne({ where: { id } });
       done(null, user);
     } catch (error) {
       console.error(error);
