@@ -25,7 +25,8 @@ passportConfig();
 
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:8080',
+    credentials: true,
   }),
 );
 
@@ -53,15 +54,13 @@ app.use(passport.session());
  */
 
 //prefix
-
-app.get('/', (req, res) => {
-  res.send('헬로~');
-});
-
 app.use('/post', postRouter);
-
-//prefix
 app.use('/user', userRouter);
+
+//에러처리용
+// app.use((err, req, res, next) => {
+
+// });
 
 app.listen(PORT, () => {
   console.log(`${PORT} start`);

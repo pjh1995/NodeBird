@@ -85,25 +85,6 @@ export const addCommentAction = (data) => {
   };
 };
 
-const dummyPost = (data) => ({
-  id: data.id,
-  User: {
-    id: 1,
-    nickname: 'jhark',
-  },
-  content: data.content,
-  Images: [],
-  Comments: [],
-});
-
-const dummyComment = (data) => ({
-  User: {
-    id: 1,
-    nickname: 'jhark',
-  },
-  content: data.content,
-});
-
 // 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성을 지키면서)
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -133,7 +114,7 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case ADD_POST_TYPE.SUCCESS: {
-        draft.mainPosts.unshift(dummyPost(action.data));
+        draft.mainPosts.unshift(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
         break;
@@ -168,9 +149,9 @@ const reducer = (state = initialState, action) => {
       }
       case ADD_COMMENT_TYPE.SUCCESS: {
         const post = draft.mainPosts.findIndex(
-          (v) => v.id === action.data.postId,
+          (v) => v.id === action.data.PostId,
         );
-        post.Comments.unshift(dummyComment(action.data));
+        post.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;

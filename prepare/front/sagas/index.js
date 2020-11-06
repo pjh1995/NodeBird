@@ -15,6 +15,7 @@ import postSaga from './post';
 import userSaga from './user';
 
 axios.defaults.baseURL = 'http://localhost:3065';
+axios.defaults.withCredentials = true; // 쿠키전달할 때 필요
 
 // put === dispatch
 

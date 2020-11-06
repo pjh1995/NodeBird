@@ -2,6 +2,9 @@ import produce from 'immer';
 import { makeActionType } from './index';
 
 export const initialState = {
+  loadUserLoading: false, // 새로고침 시 로그인 정보 받아오기.
+  loadUserDone: false,
+  loadUserError: null,
   logInLoading: false, // 로그인 시도중
   logInDone: false,
   logInError: null,
@@ -23,6 +26,14 @@ export const initialState = {
   me: null,
   signUpData: {},
   loginData: {},
+};
+
+export const LOAD_USER_TYPE = makeActionType('LOAD_USER');
+export const loadUserRequestAction = (data) => {
+  return {
+    type: LOAD_USER_TYPE.REQUEST,
+    data,
+  };
 };
 
 export const LOG_IN_TYPE = makeActionType('LOG_IN');
@@ -79,6 +90,23 @@ export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_USER_TYPE.REQUEST: {
+        draft.loadUserLoading = true;
+        draft.loadUserDone = false;
+        draft.loadUserError = null;
+        break;
+      }
+      case LOAD_USER_TYPE.SUCCESS: {
+        draft.loadUserLoading = false;
+        draft.me = action.data;
+        draft.loadUserDone = true;
+        break;
+      }
+      case LOAD_USER_TYPE.FAILURE: {
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
+        break;
+      }
       case LOG_IN_TYPE.REQUEST: {
         draft.logInLoading = true;
         draft.logInDone = false;
