@@ -89,7 +89,7 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
 router.post('/', isNotLoggedIn, async (req, res, next) => {
   const { email, nickname, password } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10); //1~13까지 암호 수준을 정해준다 숫자가 높을수록 오래걸리지만 해독이 어려움.
+    const hashedPassword = await bcrypt.hash(password, 10); //1~13까지 암호 수준을 정해준다 숫자가 높을수록 오래걸리지만 해독이 어려움..
     const exUser = await User.findOne({
       where: {
         email,
