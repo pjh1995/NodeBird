@@ -7,16 +7,19 @@ import {
   REMOVE_POST_TYPE,
   ADD_COMMENT_TYPE,
   LOAD_POSTS_TYPE,
-  generateDummyPost,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
+function loadPostAPI(data) {
+  return axios.get('/posts', data);
+}
+
 function* loadPosts(action) {
   try {
-    // const result = yield call(addPostAPI, action.data);
+    const result = yield call(loadPostAPI, action.data);
     yield put({
       type: LOAD_POSTS_TYPE.SUCCESS,
-      data: generateDummyPost(10),
+      data: result.data,
     });
   } catch (err) {
     yield put({
