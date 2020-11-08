@@ -20,6 +20,9 @@ router.get('/', async (req, res, next) => {
       include: [
         {
           model: Post,
+          where: {
+            state: true,
+          },
           attributes: ['id'],
         },
         {
@@ -62,6 +65,9 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         include: [
           {
             model: Post,
+            where: {
+              state: true,
+            },
             attributes: ['id'],
           },
           {
@@ -86,6 +92,25 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
   req.session.destroy();
   res.status(200).send('ok');
 });
+
+router.patch('/nickname', isLoggedIn, async (req, res, next) => {
+  try {
+    await User.update(
+      {
+        nickname: req.body.nickname,
+      },
+      {
+        where: { id: req.user.id },
+      },
+    );
+    res.status(200).json({ nickname: req.body.nickname });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+  res.json({ id: 1 });
+});
+
 router.post('/', isNotLoggedIn, async (req, res, next) => {
   const { email, nickname, password } = req.body;
   try {
