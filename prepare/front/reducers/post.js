@@ -1,5 +1,3 @@
-import shortId from 'shortid'; // objectId 생성
-import faker from 'faker';
 import produce from 'immer';
 
 import { makeActionType } from './index';
@@ -20,6 +18,12 @@ export const initialState = {
   addCommentDone: false,
   addCommentLoading: false,
   addCommentError: null,
+  likePostDone: false,
+  likePostLoading: false,
+  likePostError: null,
+  unLikePostDone: false,
+  unLikePostLoading: false,
+  unLikePostError: null,
 };
 
 export const LOAD_POSTS_TYPE = makeActionType('LOAD_POSTS');
@@ -54,6 +58,24 @@ export const ADD_COMMENT_TYPE = makeActionType('ADD_COMMENT');
 export const addCommentAction = (data) => {
   return {
     type: ADD_COMMENT_TYPE.REQUEST,
+    data,
+  };
+};
+
+export const LIKE_POST_TYPE = makeActionType('LIKE_POST');
+
+export const likePostAction = (data) => {
+  return {
+    type: LIKE_POST_TYPE.REQUEST,
+    data,
+  };
+};
+
+export const UN_LIKE_POST_TYPE = makeActionType('UN_LIKE_POST');
+
+export const unLIkePostAction = (data) => {
+  return {
+    type: UN_LIKE_POST_TYPE.REQUEST,
     data,
   };
 };
@@ -104,7 +126,10 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case REMOVE_POST_TYPE.SUCCESS: {
-        draft.mainPosts = state.mainPosts.filter((v) => v.id !== action.data);
+        draft.mainPosts = state.mainPosts.filter(
+          (v) => v.id !== action.data.PostId,
+        );
+        console.log(draft.mainPosts);
         draft.removePostLoading = false;
         draft.removePostDone = true;
         break;
@@ -121,10 +146,10 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case ADD_COMMENT_TYPE.SUCCESS: {
-        const post = draft.mainPosts.findIndex(
+        const targetPost = draft.mainPosts.find(
           (v) => v.id === action.data.PostId,
         );
-        post.Comments.unshift(action.data);
+        targetPost.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;
@@ -132,6 +157,48 @@ const reducer = (state = initialState, action) => {
       case ADD_COMMENT_TYPE.FAILURE: {
         draft.addCommentLoading = false;
         draft.addCommentError = action.error;
+        break;
+      }
+      case LIKE_POST_TYPE.REQUEST: {
+        draft.likePostLoading = true;
+        draft.likePostDone = false;
+        draft.likePostError = null;
+        break;
+      }
+      case LIKE_POST_TYPE.SUCCESS: {
+        const targetPost = draft.mainPosts.find(
+          (v) => v.id === action.data.PostId,
+        );
+        targetPost.Likers.push({ id: action.data.UserId });
+        draft.likePostLoading = false;
+        draft.likePostDone = true;
+        break;
+      }
+      case LIKE_POST_TYPE.FAILURE: {
+        draft.likePostLoading = false;
+        draft.likePostError = action.error;
+        break;
+      }
+      case UN_LIKE_POST_TYPE.REQUEST: {
+        draft.unLikePostLoading = true;
+        draft.unLikePostDone = false;
+        draft.unLikePostError = null;
+        break;
+      }
+      case UN_LIKE_POST_TYPE.SUCCESS: {
+        const targetPost = draft.mainPosts.find(
+          (v) => v.id === action.data.PostId,
+        );
+        targetPost.Likers = targetPost.Likers.filter(
+          (v) => v.id !== action.data.UserId,
+        );
+        draft.unLikePostLoading = false;
+        draft.unLikePostDone = true;
+        break;
+      }
+      case UN_LIKE_POST_TYPE.FAILURE: {
+        draft.unLikePostLoading = false;
+        draft.unLikePostError = action.error;
         break;
       }
       default:

@@ -6,8 +6,11 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 
 const postRouter = require('./routes/post');
+const postsRouter = require('./routes/posts');
+
 const userRouter = require('./routes/user');
 const db = require('./models');
 const passportConfig = require('./passport');
@@ -30,6 +33,7 @@ app.use(
   }),
 );
 
+app.use(morgan('dev'));
 app.use(express.json()); //json 파싱
 app.use(express.urlencoded({ extended: true })); //form 형식 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -55,6 +59,7 @@ app.use(passport.session());
 
 //prefix
 app.use('/post', postRouter);
+app.use('/posts', postsRouter);
 app.use('/user', userRouter);
 
 //에러처리용

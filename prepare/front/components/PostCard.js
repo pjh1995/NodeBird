@@ -13,25 +13,27 @@ import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
-import { REMOVE_POST_TYPE } from '../reducers/post';
+import {
+  REMOVE_POST_TYPE,
+  LIKE_POST_TYPE,
+  UN_LIKE_POST_TYPE,
+} from '../reducers/post';
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
-  const [liked, setLiked] = useState(false);
   const [commentFormOpend, setCommentFormOpend] = useState(false);
-  const id = useSelector((state) => state.user.me?.id);
   const { removePostLoading } = useSelector((state) => state.post);
 
   const onLike = useCallback(() => {
     dispatch({
-      type: LIKE_POST.REQUEST,
+      type: LIKE_POST_TYPE.REQUEST,
       data: post.id,
     });
   }, []);
 
   const onUnLike = useCallback(() => {
     dispatch({
-      type: UN_LIKE_POST.REQUEST,
+      type: UN_LIKE_POST_TYPE.REQUEST,
       data: post.id,
     });
   }, []);
@@ -47,6 +49,8 @@ const PostCard = ({ post }) => {
     });
   }, []);
 
+  const id = useSelector((state) => state.user.me?.id);
+  const liked = post.Likers.find((v) => v.id === id);
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
@@ -87,7 +91,7 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
-        extra={id && <FollowButton post={post} />}
+        extra={id && id !== post.User.id && <FollowButton post={post} />}
       >
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
@@ -127,6 +131,7 @@ PostCard.propTypes = {
       id: PropTypes.number,
       nickname: PropTypes.string,
     }),
+    Likers: PropTypes.arrayOf(PropTypes.object),
     content: PropTypes.string,
     createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
