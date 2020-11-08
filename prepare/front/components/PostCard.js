@@ -22,9 +22,19 @@ const PostCard = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
   const { removePostLoading } = useSelector((state) => state.post);
 
-  const onToggleLike = useCallback(() => {
-    setLiked((prev) => !prev);
-  }, [liked]);
+  const onLike = useCallback(() => {
+    dispatch({
+      type: LIKE_POST.REQUEST,
+      data: post.id,
+    });
+  }, []);
+
+  const onUnLike = useCallback(() => {
+    dispatch({
+      type: UN_LIKE_POST.REQUEST,
+      data: post.id,
+    });
+  }, []);
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpend((prev) => !prev);
@@ -48,9 +58,9 @@ const PostCard = ({ post }) => {
         actions={[
           <RetweetOutlined key="retweet" />,
           liked ? (
-            <HeartTwoTone twoToneColor="#eb2f96" onClick={onToggleLike} />
+            <HeartTwoTone twoToneColor="#eb2f96" onClick={onUnLike} />
           ) : (
-            <HeartOutlined key="heart" onClick={onToggleLike} />
+            <HeartOutlined key="heart" onClick={onLike} />
           ),
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
@@ -112,13 +122,13 @@ const PostCard = ({ post }) => {
 
 PostCard.propTypes = {
   post: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     User: PropTypes.shape({
-      id: PropTypes.string,
+      id: PropTypes.number,
       nickname: PropTypes.string,
     }),
     content: PropTypes.string,
-    createdAt: PropTypes.object,
+    createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,

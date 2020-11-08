@@ -13,17 +13,18 @@ router.post('/', isLoggedIn, async (req, res, next) => {
       where: { id: post.id },
       include: [
         {
-          models: Image,
+          model: Image,
         },
         {
-          models: Comment,
+          model: Comment,
         },
         {
-          models: User,
+          model: User,
+          attributes: ['id', 'nickname'],
         },
       ],
     });
-    res.status(201).json(post);
+    res.status(201).json(fullPost);
   } catch (err) {
     console.error(err);
     next(err);
@@ -34,21 +35,30 @@ router.delete('/', isLoggedIn, (req, res) => {
   res.json({ id: 1 });
 });
 
-router.post(':postId/comment', isLoggedIn, async (req, res, next) => {
+router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   try {
     const { postId } = req.params;
     const post = await Post.findOne({
       where: { id: postId },
     });
-    if (post) {
+    if (!post) {
       return res.status(403).send('존재하지 않는 게시물입니다.');
     }
     const comment = await Comment.create({
       content: req.body.content,
-      PostId: postId,
+      PostId: parseInt(postId),
       UserId: req.user.id,
     });
-    res.status(201).json(comment);
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'nickname'],
+        },
+      ],
+    });
+    res.status(201).json(fullComment);
   } catch (err) {
     console.error(err);
     next(err);
