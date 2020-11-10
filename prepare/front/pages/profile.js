@@ -26,8 +26,8 @@ const Profile = () => {
       </Head>
       <AppLayout>
         <NicknameEditForm />
-        <FollowList data={me.Followings} isfollower={false} />
-        <FollowList data={me.Followers} isfollower />
+        {/* <FollowList data={me.Followings} isfollower={false} /> */}
+        {/* <FollowList data={me.Followers} isfollower /> */}
       </AppLayout>
     </>
   );

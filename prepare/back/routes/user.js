@@ -54,7 +54,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
     }
     return req.login(user, async (loginErr) => {
       if (loginErr) {
-        console.error(loginErr);
+        console.error('' + loginErr);
         return next(loginErr);
       }
       const fullUserWithoutPassword = await User.findOne({
