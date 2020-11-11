@@ -92,7 +92,7 @@ router.patch('/:postId/like', isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.patch('/:postId/unlike', isLoggedIn, async (req, res, next) => {
+router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({
       where: {

@@ -88,14 +88,17 @@ function* signUp(action) {
   }
 }
 
+function followAPI(data) {
+  return axios.patch(`/user/${data}/follow`);
+}
+
 function* follow(action) {
   try {
-    // const result = yield call(logOutAPI);
-    // const result = logOutAPI;;
+    const result = yield call(followAPI, action.data);
     yield delay(1000);
     yield put({
       type: FOLLOW_TYPE.SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -105,14 +108,16 @@ function* follow(action) {
   }
 }
 
+function unFollowAPI(data) {
+  return axios.delete(`/user/${data}/follow`);
+}
 function* unfollow(action) {
   try {
-    // const result = yield call(logOutAPI);
-    // const result = logOutAPI;
+    const result = yield call(unFollowAPI, action.data);
     yield delay(1000);
     yield put({
       type: UNFOLLOW_TYPE.SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({

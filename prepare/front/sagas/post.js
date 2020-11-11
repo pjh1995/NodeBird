@@ -117,7 +117,7 @@ function* likePost(action) {
 }
 
 function unLikePostAPI(data) {
-  return axios.patch(`/post/${data}/unlike`);
+  return axios.delete(`/post/${data}/like`);
 }
 
 function* unLikePost(action) {
