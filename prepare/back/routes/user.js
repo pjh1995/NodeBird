@@ -122,7 +122,7 @@ router.patch('/:userId/follow', isLoggedIn, async (req, res, next) => {
     await user.addFollowes(req.user.id);
     res.status(200).json({ UserId: parseInt(req.params.userId) });
   } catch (error) {
-    console.error(error);
+    console.error(error + '');
     next(error);
   }
   res.json({ id: 1 });
