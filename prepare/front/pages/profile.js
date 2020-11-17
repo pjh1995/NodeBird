@@ -5,7 +5,7 @@ import Router from 'next/router';
 import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
-import { LOAD_FOLLOWERS_TYPE, LOAD_FOLLOWINGS_TYPE } from '../reducers/user';
+import { LOAD_FOLLOWERS, LOAD_FOLLOWINGS } from '../reducers/user';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -13,10 +13,10 @@ const Profile = () => {
   const { me } = useSelector((state) => state.user);
   useEffect(() => {
     dispatch({
-      type: LOAD_FOLLOWERS_TYPE.REQUEST,
+      type: LOAD_FOLLOWERS.REQUEST,
     });
     dispatch({
-      type: LOAD_FOLLOWINGS_TYPE.REQUEST,
+      type: LOAD_FOLLOWINGS.REQUEST,
     });
   }, []);
 

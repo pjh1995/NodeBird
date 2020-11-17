@@ -4,8 +4,8 @@ import { Button, Card, List } from 'antd';
 import { StopOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 
-import styled from 'styled-components';
-import { UNFOLLOW_TYPE, BLOCK_FOLLOWER_TYPE } from '../reducers/user';
+// import styled from 'styled-components';
+import { UNFOLLOW, BLOCK_FOLLOWER } from '../reducers/user';
 
 // const FollowListWrap = styled(List)`
 //   margin-bottom: 20px;
@@ -34,7 +34,7 @@ const FollowList = ({ data, isfollower }) => {
   };
 
   const onCancel = (id) => () => {
-    const TYPE = isfollower ? BLOCK_FOLLOWER_TYPE : UNFOLLOW_TYPE;
+    const TYPE = isfollower ? BLOCK_FOLLOWER : UNFOLLOW;
 
     dispatch({
       type: TYPE.REQUEST,

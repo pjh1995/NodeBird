@@ -100,7 +100,21 @@ router.delete('/:userId/follow', isLoggedIn, async (req, res, next) => {
     console.error(error);
     next(error);
   }
-  res.json({ id: 1 });
+});
+
+router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await getUserFromUserId(req.params.userId);
+
+    if (!user) {
+      res.status(403).send('해당 유저가 존재하지 않습니다.');
+    }
+    await user.removeFollowings(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 router.get('/followers', isLoggedIn, async (req, res, next) => {

@@ -2,15 +2,16 @@ import { all, fork, put, takeLatest, delay, call } from 'redux-saga/effects';
 import axios from 'axios';
 
 import {
-  LOG_IN_TYPE,
-  LOG_OUT_TYPE,
-  SIGN_UP_TYPE,
-  UNFOLLOW_TYPE,
-  FOLLOW_TYPE,
-  LOAD_USER_TYPE,
-  CHANGE_NICKNAME_TYPE,
-  LOAD_FOLLOWINGS_TYPE,
-  LOAD_FOLLOWERS_TYPE,
+  LOG_IN,
+  LOG_OUT,
+  SIGN_UP,
+  UNFOLLOW,
+  FOLLOW,
+  LOAD_USER,
+  CHANGE_NICKNAME,
+  LOAD_FOLLOWINGS,
+  LOAD_FOLLOWERS,
+  BLOCK_FOLLOWER,
 } from '../reducers/user';
 
 function loadUserAPI() {
@@ -21,12 +22,12 @@ function* loadUser(action) {
   try {
     const result = yield call(loadUserAPI, action.data);
     yield put({
-      type: LOAD_USER_TYPE.SUCCESS,
+      type: LOAD_USER.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: LOAD_USER_TYPE.FAILURE,
+      type: LOAD_USER.FAILURE,
       error: err.response.data,
     });
   }
@@ -41,12 +42,12 @@ function* logIn(action) {
     const result = yield call(logInAPI, action.data);
     console.log(result);
     yield put({
-      type: LOG_IN_TYPE.SUCCESS,
+      type: LOG_IN.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: LOG_IN_TYPE.FAILURE,
+      type: LOG_IN.FAILURE,
       error: err.response.data,
     });
   }
@@ -60,12 +61,12 @@ function* logOut() {
   try {
     yield call(logOutAPI);
     yield put({
-      type: LOG_OUT_TYPE.SUCCESS,
+      type: LOG_OUT.SUCCESS,
       data: true,
     });
   } catch (err) {
     yield put({
-      type: LOG_OUT_TYPE.FAILURE,
+      type: LOG_OUT.FAILURE,
       error: err.response.data,
     });
   }
@@ -80,12 +81,12 @@ function* signUp(action) {
     const result = yield call(signUpAPI, action.data);
     console.log(result);
     yield put({
-      type: SIGN_UP_TYPE.SUCCESS,
+      type: SIGN_UP.SUCCESS,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: SIGN_UP_TYPE.FAILURE,
+      type: SIGN_UP.FAILURE,
       error: err.response.data,
     });
   }
@@ -100,12 +101,12 @@ function* follow(action) {
     const result = yield call(followAPI, action.data);
     yield delay(1000);
     yield put({
-      type: FOLLOW_TYPE.SUCCESS,
+      type: FOLLOW.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: FOLLOW_TYPE.FAILURE,
+      type: FOLLOW.FAILURE,
       error: err.response.data,
     });
   }
@@ -119,12 +120,12 @@ function* unfollow(action) {
     const result = yield call(unFollowAPI, action.data);
     yield delay(1000);
     yield put({
-      type: UNFOLLOW_TYPE.SUCCESS,
+      type: UNFOLLOW.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: UNFOLLOW_TYPE.FAILURE,
+      type: UNFOLLOW.FAILURE,
       error: err.response.data,
     });
   }
@@ -138,12 +139,12 @@ function* loadFollowings(action) {
     const result = yield call(loadFollowingsAPI, action.data);
     yield delay(1000);
     yield put({
-      type: LOAD_FOLLOWINGS_TYPE.SUCCESS,
+      type: LOAD_FOLLOWINGS.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: LOAD_FOLLOWINGS_TYPE.FAILURE,
+      type: LOAD_FOLLOWINGS.FAILURE,
       error: err.response.data,
     });
   }
@@ -157,12 +158,31 @@ function* loadFollowers(action) {
     const result = yield call(loadFollowersAPI, action.data);
     yield delay(1000);
     yield put({
-      type: LOAD_FOLLOWERS_TYPE.SUCCESS,
+      type: LOAD_FOLLOWERS.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: LOAD_FOLLOWERS_TYPE.FAILURE,
+      type: LOAD_FOLLOWERS.FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function blockFollowerAPI(data) {
+  return axios.delete(`/user/follower/${data}`);
+}
+function* blockFollower(action) {
+  try {
+    const result = yield call(blockFollowerAPI, action.data);
+    yield delay(1000);
+    yield put({
+      type: BLOCK_FOLLOWER.SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: BLOCK_FOLLOWER.FAILURE,
       error: err.response.data,
     });
   }
@@ -176,51 +196,55 @@ function* changeNickname(action) {
   try {
     const result = yield call(changeNicknameAPI, action.data);
     yield put({
-      type: CHANGE_NICKNAME_TYPE.SUCCESS,
+      type: CHANGE_NICKNAME.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: CHANGE_NICKNAME_TYPE.FAILURE,
+      type: CHANGE_NICKNAME.FAILURE,
       error: err.response.data,
     });
   }
 }
 
 function* watchLoadUser() {
-  yield takeLatest(LOAD_USER_TYPE.REQUEST, loadUser);
+  yield takeLatest(LOAD_USER.REQUEST, loadUser);
 }
 
 function* watchLogin() {
-  yield takeLatest(LOG_IN_TYPE.REQUEST, logIn);
+  yield takeLatest(LOG_IN.REQUEST, logIn);
 }
 
 function* watchLogOut() {
-  yield takeLatest(LOG_OUT_TYPE.REQUEST, logOut);
+  yield takeLatest(LOG_OUT.REQUEST, logOut);
 }
 
 function* watchSignUp() {
-  yield takeLatest(SIGN_UP_TYPE.REQUEST, signUp);
+  yield takeLatest(SIGN_UP.REQUEST, signUp);
 }
 
 function* watchFollow() {
-  yield takeLatest(FOLLOW_TYPE.REQUEST, follow);
+  yield takeLatest(FOLLOW.REQUEST, follow);
 }
 
 function* watchUnfollow() {
-  yield takeLatest(UNFOLLOW_TYPE.REQUEST, unfollow);
+  yield takeLatest(UNFOLLOW.REQUEST, unfollow);
 }
 
 function* watchLoadFollowings() {
-  yield takeLatest(LOAD_FOLLOWINGS_TYPE.REQUEST, loadFollowings);
+  yield takeLatest(LOAD_FOLLOWINGS.REQUEST, loadFollowings);
 }
 
 function* watchLoadFollowers() {
-  yield takeLatest(LOAD_FOLLOWERS_TYPE.REQUEST, loadFollowers);
+  yield takeLatest(LOAD_FOLLOWERS.REQUEST, loadFollowers);
+}
+
+function* watchBlockFollower() {
+  yield takeLatest(BLOCK_FOLLOWER.REQUEST, blockFollower);
 }
 
 function* watchChangeNickname() {
-  yield takeLatest(CHANGE_NICKNAME_TYPE.REQUEST, changeNickname);
+  yield takeLatest(CHANGE_NICKNAME.REQUEST, changeNickname);
 }
 
 export default function* userSaga() {
@@ -234,5 +258,6 @@ export default function* userSaga() {
     fork(watchFollow),
     fork(watchLoadFollowings),
     fork(watchLoadFollowers),
+    fork(watchBlockFollower),
   ]);
 }

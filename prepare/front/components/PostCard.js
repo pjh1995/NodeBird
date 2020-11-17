@@ -13,11 +13,7 @@ import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
-import {
-  REMOVE_POST_TYPE,
-  LIKE_POST_TYPE,
-  UN_LIKE_POST_TYPE,
-} from '../reducers/post';
+import { REMOVE_POST, LIKE_POST, UN_LIKE_POST } from '../reducers/post';
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -26,14 +22,14 @@ const PostCard = ({ post }) => {
 
   const onLike = useCallback(() => {
     dispatch({
-      type: LIKE_POST_TYPE.REQUEST,
+      type: LIKE_POST.REQUEST,
       data: post.id,
     });
   }, []);
 
   const onUnLike = useCallback(() => {
     dispatch({
-      type: UN_LIKE_POST_TYPE.REQUEST,
+      type: UN_LIKE_POST.REQUEST,
       data: post.id,
     });
   }, []);
@@ -44,7 +40,7 @@ const PostCard = ({ post }) => {
 
   const onRemovePost = useCallback(() => {
     dispatch({
-      type: REMOVE_POST_TYPE.REQUEST,
+      type: REMOVE_POST.REQUEST,
       data: post.id,
     });
   }, []);

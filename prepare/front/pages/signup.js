@@ -9,7 +9,7 @@ import FormInput from '../components/FormInput';
 import AppLayout from '../components/AppLayout';
 
 import useInput from '../hooks/useInput';
-import { SIGN_UP_TYPE } from '../reducers/user';
+import { SIGN_UP } from '../reducers/user';
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ const Signup = () => {
       setError('약관에 동의해야만 회원가입이 가능합니다.');
     } else {
       dispatch({
-        type: SIGN_UP_TYPE.REQUEST,
+        type: SIGN_UP.REQUEST,
         data: { email, password, nickname },
       });
     }

@@ -1,8 +1,18 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
 const { Post, Comment, Image, User } = require('../models');
 const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
+try {
+  fs.accessSync('uploads');
+} catch (error) {
+  console.log('upload 폴더가 없으므로 생성합니다.');
+  fs.mkdirSync('uploads');
+}
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.create({
@@ -41,6 +51,40 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     next(err);
   }
 });
+
+const upload = multer({
+  storage: multer.diskStorage({
+    //우선은 하드디스크
+    destination(req, file, done) {
+      done(null, 'uploads');
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname); //확장자 추출 ex).png
+      const basename = path.basename(file.originalname, ext);
+      //basename(file) -> 강아지.png, basename(file,확장자) : 확장자를 제외한 파일 이름만 추출 -> 강아지
+      //https://uxicode.tistory.com/entry/nodejs-path-%EB%AA%A8%EB%93%88
+
+      //파일 이름이 중복되면 덮어씌워 지므로 이름을 변경해줌 ex)강아지.png -> 강아지123456789.png
+      done(null, basename + new Date().getTime() + ext);
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, //20mb
+});
+
+router.post(
+  '/images',
+  isLoggedIn,
+  upload.array('image'), //upload.array:여러개, upload.single:1개, upload.none:text
+  async (req, res, next) => {
+    try {
+      console.log(req.files);
+      res.status(200).json(req.files.map((v) => v.filename));
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  },
+);
 
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   try {

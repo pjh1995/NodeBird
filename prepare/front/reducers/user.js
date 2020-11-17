@@ -34,43 +34,43 @@ export const initialState = {
   loginData: {},
 };
 
-export const LOAD_USER_TYPE = makeActionType('LOAD_USER');
+export const LOAD_USER = makeActionType('LOAD_USER');
 export const loadUserRequestAction = (data) => {
   return {
-    type: LOAD_USER_TYPE.REQUEST,
+    type: LOAD_USER.REQUEST,
     data,
   };
 };
 
-export const LOG_IN_TYPE = makeActionType('LOG_IN');
+export const LOG_IN = makeActionType('LOG_IN');
 export const loginRequestAction = (data) => {
   return {
-    type: LOG_IN_TYPE.REQUEST,
+    type: LOG_IN.REQUEST,
     data,
   };
 };
 
-export const LOG_OUT_TYPE = makeActionType('LOG_OUT');
+export const LOG_OUT = makeActionType('LOG_OUT');
 export const logoutRequestAction = (data) => {
   return {
-    type: LOG_OUT_TYPE.REQUEST,
+    type: LOG_OUT.REQUEST,
     data,
   };
 };
 
-export const SIGN_UP_TYPE = makeActionType('SIGN_UP');
+export const SIGN_UP = makeActionType('SIGN_UP');
 
-export const CHANGE_NICKNAME_TYPE = makeActionType('CHANGE_NICKNAME');
+export const CHANGE_NICKNAME = makeActionType('CHANGE_NICKNAME');
 
-export const UNFOLLOW_TYPE = makeActionType('UNFOLLOW');
+export const UNFOLLOW = makeActionType('UNFOLLOW');
 
-export const FOLLOW_TYPE = makeActionType('FOLLOW');
+export const FOLLOW = makeActionType('FOLLOW');
 
-export const LOAD_FOLLOWERS_TYPE = makeActionType('LOAD_FOLLOWERS');
+export const LOAD_FOLLOWERS = makeActionType('LOAD_FOLLOWERS');
 
-export const LOAD_FOLLOWINGS_TYPE = makeActionType('LOAD_FOLLOWINGS');
+export const LOAD_FOLLOWINGS = makeActionType('LOAD_FOLLOWINGS');
 
-export const BLOCK_FOLLOWER_TYPE = makeActionType('BLOCK_FOLLOWER');
+export const BLOCK_FOLLOWER = makeActionType('BLOCK_FOLLOWER');
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
@@ -78,97 +78,97 @@ export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
-      case LOAD_USER_TYPE.REQUEST: {
+      case LOAD_USER.REQUEST: {
         draft.loadUserLoading = true;
         draft.loadUserDone = false;
         draft.loadUserError = null;
         break;
       }
-      case LOAD_USER_TYPE.SUCCESS: {
+      case LOAD_USER.SUCCESS: {
         draft.loadUserLoading = false;
         draft.me = action.data;
         draft.loadUserDone = true;
         break;
       }
-      case LOAD_USER_TYPE.FAILURE: {
+      case LOAD_USER.FAILURE: {
         draft.loadUserLoading = false;
         draft.loadUserError = action.error;
         break;
       }
-      case LOG_IN_TYPE.REQUEST: {
+      case LOG_IN.REQUEST: {
         draft.logInLoading = true;
         draft.logInDone = false;
         draft.logInError = null;
         break;
       }
-      case LOG_IN_TYPE.SUCCESS: {
+      case LOG_IN.SUCCESS: {
         draft.logInLoading = false;
         draft.me = action.data;
         draft.logInDone = true;
         break;
       }
-      case LOG_IN_TYPE.FAILURE: {
+      case LOG_IN.FAILURE: {
         draft.logInLoading = false;
         draft.logInError = action.error;
         break;
       }
-      case LOG_OUT_TYPE.REQUEST: {
+      case LOG_OUT.REQUEST: {
         draft.logOutLoading = true;
         draft.logOutDone = false;
         draft.logOutError = null;
         break;
       }
-      case LOG_OUT_TYPE.SUCCESS: {
+      case LOG_OUT.SUCCESS: {
         draft.logOutLoading = false;
         draft.logOutDone = true;
         draft.me = null;
         break;
       }
-      case LOG_OUT_TYPE.FAILURE: {
+      case LOG_OUT.FAILURE: {
         draft.logOutLoading = false;
         draft.logOutError = action.error;
         break;
       }
-      case SIGN_UP_TYPE.REQUEST: {
+      case SIGN_UP.REQUEST: {
         draft.signUpLoading = true;
         draft.signUpDone = false;
         draft.signUpError = null;
         break;
       }
-      case SIGN_UP_TYPE.SUCCESS: {
+      case SIGN_UP.SUCCESS: {
         draft.signUpLoading = false;
         draft.signUpDone = true;
         break;
       }
-      case SIGN_UP_TYPE.FAILURE: {
+      case SIGN_UP.FAILURE: {
         draft.signUpLoading = false;
         draft.signUpError = action.error;
         break;
       }
-      case CHANGE_NICKNAME_TYPE.REQUEST: {
+      case CHANGE_NICKNAME.REQUEST: {
         draft.changeNicknameLoading = true;
         draft.changeNicknameDone = false;
         draft.changeNicknameError = null;
         break;
       }
-      case CHANGE_NICKNAME_TYPE.SUCCESS: {
+      case CHANGE_NICKNAME.SUCCESS: {
         draft.me.nickname = action.data.nickname;
         draft.changeNicknameLoading = false;
         draft.changeNicknameDone = true;
         break;
       }
-      case CHANGE_NICKNAME_TYPE.FAILURE: {
+      case CHANGE_NICKNAME.FAILURE: {
         draft.changeNicknameLoading = false;
         draft.changeNicknameError = action.error;
         break;
       }
-      case UNFOLLOW_TYPE.REQUEST: {
+      case UNFOLLOW.REQUEST: {
         draft.unfollowLoading = true;
         draft.unfollowDone = false;
         draft.unfollowError = null;
         break;
       }
-      case UNFOLLOW_TYPE.SUCCESS: {
+      case UNFOLLOW.SUCCESS: {
         draft.unfollowLoading = false;
         draft.me.Followings = draft.me.Followings.filter(
           (v) => v.id !== action.data.UserId,
@@ -176,60 +176,79 @@ const reducer = (state = initialState, action) => {
         draft.unfollowDone = true;
         break;
       }
-      case UNFOLLOW_TYPE.FAILURE: {
+      case UNFOLLOW.FAILURE: {
         draft.unfollowLoading = false;
         draft.unfollowError = action.error;
         break;
       }
-      case FOLLOW_TYPE.REQUEST: {
+      case FOLLOW.REQUEST: {
         draft.followLoading = true;
         draft.followDone = false;
         draft.followError = null;
         break;
       }
-      case FOLLOW_TYPE.SUCCESS: {
+      case FOLLOW.SUCCESS: {
         draft.followLoading = false;
         draft.me.Followings.push({ id: action.data.UserId });
         draft.followDone = true;
         break;
       }
-      case FOLLOW_TYPE.FAILURE: {
+      case FOLLOW.FAILURE: {
         draft.followLoading = false;
         draft.followError = action.error;
         break;
       }
-      case LOAD_FOLLOWINGS_TYPE.REQUEST: {
+      case LOAD_FOLLOWINGS.REQUEST: {
         draft.loadFollowingsLoading = true;
         draft.loadFollowingsDone = false;
         draft.loadFollowingsError = null;
         break;
       }
-      case LOAD_FOLLOWINGS_TYPE.SUCCESS: {
+      case LOAD_FOLLOWINGS.SUCCESS: {
         draft.loadFollowingsLoading = false;
         draft.me.Followings = action.data;
         draft.loadFollowingsDone = true;
         break;
       }
-      case LOAD_FOLLOWINGS_TYPE.FAILURE: {
+      case LOAD_FOLLOWINGS.FAILURE: {
         draft.loadFollowingsLoading = false;
         draft.loadFollowingsError = action.error;
         break;
       }
-      case LOAD_FOLLOWERS_TYPE.REQUEST: {
+      case LOAD_FOLLOWERS.REQUEST: {
         draft.loadFollowersLoading = true;
         draft.loadFollowersDone = false;
         draft.loadFollowersError = null;
         break;
       }
-      case LOAD_FOLLOWERS_TYPE.SUCCESS: {
+      case LOAD_FOLLOWERS.SUCCESS: {
         draft.loadFollowersLoading = false;
         draft.me.Followers = action.data;
         draft.loadFollowersDone = true;
         break;
       }
-      case LOAD_FOLLOWERS_TYPE.FAILURE: {
+      case LOAD_FOLLOWERS.FAILURE: {
         draft.loadFollowersLoading = false;
         draft.loadFollowersError = action.error;
+        break;
+      }
+      case BLOCK_FOLLOWER.REQUEST: {
+        draft.blockFollowerLoading = true;
+        draft.blockFollowerDone = false;
+        draft.blockFollowerError = null;
+        break;
+      }
+      case BLOCK_FOLLOWER.SUCCESS: {
+        draft.blockFollowerLoading = false;
+        draft.me.Followers = draft.me.Followers.filter(
+          (v) => v.id !== action.data.UserId,
+        );
+        draft.blockFollowerDone = true;
+        break;
+      }
+      case BLOCK_FOLLOWER.FAILURE: {
+        draft.blockFollowerLoading = false;
+        draft.blockFollowerError = action.error;
         break;
       }
       case ADD_POST_TO_ME: {

@@ -24,108 +24,106 @@ export const initialState = {
   unLikePostDone: false,
   unLikePostLoading: false,
   unLikePostError: null,
+  uploadImagesDone: false,
+  uploadImagesLoading: false,
+  uploadImagesError: null,
 };
 
-export const LOAD_POSTS_TYPE = makeActionType('LOAD_POSTS');
+export const LOAD_POSTS = makeActionType('LOAD_POSTS');
 
 export const loadPostsAction = (data) => {
   return {
-    type: LOAD_POSTS_TYPE.REQUEST,
+    type: LOAD_POSTS.REQUEST,
     data,
   };
 };
 
-export const ADD_POST_TYPE = makeActionType('ADD_POST');
+export const ADD_POST = makeActionType('ADD_POST');
 
 export const addPostAction = (data) => {
   return {
-    type: ADD_POST_TYPE.REQUEST,
+    type: ADD_POST.REQUEST,
     data,
   };
 };
 
-export const REMOVE_POST_TYPE = makeActionType('REMOVE_POST');
+export const REMOVE_POST = makeActionType('REMOVE_POST');
 
 export const removePostAction = (data) => {
   return {
-    type: REMOVE_POST_TYPE.REQUEST,
+    type: REMOVE_POST.REQUEST,
     data,
   };
 };
 
-export const ADD_COMMENT_TYPE = makeActionType('ADD_COMMENT');
+export const ADD_COMMENT = makeActionType('ADD_COMMENT');
 
 export const addCommentAction = (data) => {
   return {
-    type: ADD_COMMENT_TYPE.REQUEST,
+    type: ADD_COMMENT.REQUEST,
     data,
   };
 };
 
-export const LIKE_POST_TYPE = makeActionType('LIKE_POST');
+export const LIKE_POST = makeActionType('LIKE_POST');
 
 export const likePostAction = (data) => {
   return {
-    type: LIKE_POST_TYPE.REQUEST,
+    type: LIKE_POST.REQUEST,
     data,
   };
 };
 
-export const UN_LIKE_POST_TYPE = makeActionType('UN_LIKE_POST');
+export const UN_LIKE_POST = makeActionType('UN_LIKE_POST');
 
-export const unLIkePostAction = (data) => {
-  return {
-    type: UN_LIKE_POST_TYPE.REQUEST,
-    data,
-  };
-};
+export const UPLOAD_IMAGES = makeActionType('UPLOAD_IMAGES');
 
 // 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성을 지키면서)
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
-      case LOAD_POSTS_TYPE.REQUEST: {
+      case LOAD_POSTS.REQUEST: {
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
         draft.loadPostsError = null;
         break;
       }
-      case LOAD_POSTS_TYPE.SUCCESS: {
+      case LOAD_POSTS.SUCCESS: {
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
         draft.mainPosts = action.data.concat(draft.mainPosts);
         draft.hasMorePosts = draft.mainPosts.length < 30;
         break;
       }
-      case LOAD_POSTS_TYPE.FAILURE: {
+      case LOAD_POSTS.FAILURE: {
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
         break;
       }
-      case ADD_POST_TYPE.REQUEST: {
+      case ADD_POST.REQUEST: {
         draft.addPostLoading = true;
         draft.addPostDone = false;
         draft.addPostError = null;
         break;
       }
-      case ADD_POST_TYPE.SUCCESS: {
+      case ADD_POST.SUCCESS: {
         draft.mainPosts.unshift(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
         break;
       }
-      case ADD_POST_TYPE.FAILURE: {
+      case ADD_POST.FAILURE: {
         draft.addPostLoading = false;
         draft.addPostError = action.error;
         break;
       }
-      case REMOVE_POST_TYPE.REQUEST: {
+      case REMOVE_POST.REQUEST: {
         draft.removePostLoading = true;
         draft.removePostDone = false;
         draft.removePostError = null;
         break;
       }
-      case REMOVE_POST_TYPE.SUCCESS: {
+      case REMOVE_POST.SUCCESS: {
         draft.mainPosts = state.mainPosts.filter(
           (v) => v.id !== action.data.PostId,
         );
@@ -134,18 +132,18 @@ const reducer = (state = initialState, action) => {
         draft.removePostDone = true;
         break;
       }
-      case REMOVE_POST_TYPE.FAILURE: {
+      case REMOVE_POST.FAILURE: {
         draft.removePostLoading = false;
         draft.removePostError = action.error;
         break;
       }
-      case ADD_COMMENT_TYPE.REQUEST: {
+      case ADD_COMMENT.REQUEST: {
         draft.addCommentLoading = true;
         draft.addCommentDone = false;
         draft.addCommentError = null;
         break;
       }
-      case ADD_COMMENT_TYPE.SUCCESS: {
+      case ADD_COMMENT.SUCCESS: {
         const targetPost = draft.mainPosts.find(
           (v) => v.id === action.data.PostId,
         );
@@ -154,18 +152,18 @@ const reducer = (state = initialState, action) => {
         draft.addCommentDone = true;
         break;
       }
-      case ADD_COMMENT_TYPE.FAILURE: {
+      case ADD_COMMENT.FAILURE: {
         draft.addCommentLoading = false;
         draft.addCommentError = action.error;
         break;
       }
-      case LIKE_POST_TYPE.REQUEST: {
+      case LIKE_POST.REQUEST: {
         draft.likePostLoading = true;
         draft.likePostDone = false;
         draft.likePostError = null;
         break;
       }
-      case LIKE_POST_TYPE.SUCCESS: {
+      case LIKE_POST.SUCCESS: {
         const targetPost = draft.mainPosts.find(
           (v) => v.id === action.data.PostId,
         );
@@ -174,18 +172,18 @@ const reducer = (state = initialState, action) => {
         draft.likePostDone = true;
         break;
       }
-      case LIKE_POST_TYPE.FAILURE: {
+      case LIKE_POST.FAILURE: {
         draft.likePostLoading = false;
         draft.likePostError = action.error;
         break;
       }
-      case UN_LIKE_POST_TYPE.REQUEST: {
+      case UN_LIKE_POST.REQUEST: {
         draft.unLikePostLoading = true;
         draft.unLikePostDone = false;
         draft.unLikePostError = null;
         break;
       }
-      case UN_LIKE_POST_TYPE.SUCCESS: {
+      case UN_LIKE_POST.SUCCESS: {
         const targetPost = draft.mainPosts.find(
           (v) => v.id === action.data.PostId,
         );
@@ -196,9 +194,26 @@ const reducer = (state = initialState, action) => {
         draft.unLikePostDone = true;
         break;
       }
-      case UN_LIKE_POST_TYPE.FAILURE: {
+      case UN_LIKE_POST.FAILURE: {
         draft.unLikePostLoading = false;
         draft.unLikePostError = action.error;
+        break;
+      }
+      case UPLOAD_IMAGES.REQUEST: {
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+      }
+      case UPLOAD_IMAGES.SUCCESS: {
+        draft.imagePaths = action.data;
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        break;
+      }
+      case UPLOAD_IMAGES.FAILURE: {
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
         break;
       }
       default:

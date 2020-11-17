@@ -4,8 +4,8 @@ import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 
-import { LOAD_POSTS_TYPE } from '../reducers/post';
-import { LOAD_USER_TYPE } from '../reducers/user';
+import { LOAD_POSTS } from '../reducers/post';
+import { LOAD_USER } from '../reducers/user';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,10 +16,10 @@ const Home = () => {
 
   useEffect(() => {
     dispatch({
-      type: LOAD_USER_TYPE.REQUEST,
+      type: LOAD_USER.REQUEST,
     });
     dispatch({
-      type: LOAD_POSTS_TYPE.REQUEST,
+      type: LOAD_POSTS.REQUEST,
     });
   }, []);
 
@@ -31,7 +31,7 @@ const Home = () => {
       ) {
         if (hasMorePosts && !loadPostsLoading) {
           dispatch({
-            type: LOAD_POSTS_TYPE.REQUEST,
+            type: LOAD_POSTS.REQUEST,
           });
         }
       }

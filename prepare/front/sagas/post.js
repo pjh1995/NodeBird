@@ -2,12 +2,13 @@ import { all, fork, put, takeLatest, throttle, call } from 'redux-saga/effects';
 import axios from 'axios';
 
 import {
-  ADD_POST_TYPE,
-  REMOVE_POST_TYPE,
-  ADD_COMMENT_TYPE,
-  LOAD_POSTS_TYPE,
-  LIKE_POST_TYPE,
-  UN_LIKE_POST_TYPE,
+  ADD_POST,
+  REMOVE_POST,
+  ADD_COMMENT,
+  LOAD_POSTS,
+  LIKE_POST,
+  UN_LIKE_POST,
+  UPLOAD_IMAGES,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -19,12 +20,12 @@ function* loadPosts(action) {
   try {
     const result = yield call(loadPostAPI, action.data);
     yield put({
-      type: LOAD_POSTS_TYPE.SUCCESS,
+      type: LOAD_POSTS.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     yield put({
-      type: LOAD_POSTS_TYPE.FAILURE,
+      type: LOAD_POSTS.FAILURE,
       error: err.response.data,
     });
   }
@@ -38,7 +39,7 @@ function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
     yield put({
-      type: ADD_POST_TYPE.SUCCESS,
+      type: ADD_POST.SUCCESS,
       data: result.data,
     });
     yield put({
@@ -47,7 +48,7 @@ function* addPost(action) {
     });
   } catch (err) {
     yield put({
-      type: ADD_POST_TYPE.FAILURE,
+      type: ADD_POST.FAILURE,
       error: err.response.data,
     });
   }
@@ -61,7 +62,7 @@ function* removePost(action) {
   try {
     const result = yield call(removePostAPI, action.data);
     yield put({
-      type: REMOVE_POST_TYPE.SUCCESS,
+      type: REMOVE_POST.SUCCESS,
       data: result.data,
     });
     yield put({
@@ -70,7 +71,7 @@ function* removePost(action) {
     });
   } catch (err) {
     yield put({
-      type: REMOVE_POST_TYPE.FAILURE,
+      type: REMOVE_POST.FAILURE,
       error: err.response.data,
     });
   }
@@ -84,13 +85,13 @@ function* addComment(action) {
   try {
     const result = yield call(addCommentAPI, action.data);
     yield put({
-      type: ADD_COMMENT_TYPE.SUCCESS,
+      type: ADD_COMMENT.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: ADD_COMMENT_TYPE.FAILURE,
+      type: ADD_COMMENT.FAILURE,
       error: err.response.data,
     });
   }
@@ -104,13 +105,13 @@ function* likePost(action) {
   try {
     const result = yield call(likePostAPI, action.data);
     yield put({
-      type: LIKE_POST_TYPE.SUCCESS,
+      type: LIKE_POST.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LIKE_POST_TYPE.FAILURE,
+      type: LIKE_POST.FAILURE,
       error: err.response.data,
     });
   }
@@ -124,43 +125,69 @@ function* unLikePost(action) {
   try {
     const result = yield call(unLikePostAPI, action.data);
     yield put({
-      type: UN_LIKE_POST_TYPE.SUCCESS,
+      type: UN_LIKE_POST.SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: UN_LIKE_POST_TYPE.FAILURE,
+      type: UN_LIKE_POST.FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function uploadImagesAPI(data) {
+  return axios.post('/post/images', data);
+}
+
+function* uploadImages(action) {
+  try {
+    const result = yield call(uploadImagesAPI, action.data);
+    yield put({
+      type: UPLOAD_IMAGES.SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UPLOAD_IMAGES.FAILURE,
       error: err.response.data,
     });
   }
 }
 
 function* watchLoadPosts() {
-  yield throttle(5000, LOAD_POSTS_TYPE.REQUEST, loadPosts);
+  yield throttle(5000, LOAD_POSTS.REQUEST, loadPosts);
 }
 
 function* watchAddPost() {
-  yield takeLatest(ADD_POST_TYPE.REQUEST, addPost);
+  yield takeLatest(ADD_POST.REQUEST, addPost);
 }
 
 function* watchRemovePost() {
-  yield takeLatest(REMOVE_POST_TYPE.REQUEST, removePost);
+  yield takeLatest(REMOVE_POST.REQUEST, removePost);
 }
 
 function* watchAddComment() {
-  yield takeLatest(ADD_COMMENT_TYPE.REQUEST, addComment);
+  yield takeLatest(ADD_COMMENT.REQUEST, addComment);
 }
 
 function* watchUnLikePost() {
-  yield takeLatest(UN_LIKE_POST_TYPE.REQUEST, unLikePost);
+  yield takeLatest(UN_LIKE_POST.REQUEST, unLikePost);
 }
 
 function* watchLikePost() {
-  yield takeLatest(LIKE_POST_TYPE.REQUEST, likePost);
+  yield takeLatest(LIKE_POST.REQUEST, likePost);
 }
+
+function* watchUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES.REQUEST, uploadImages);
+}
+
 export default function* postSaga() {
   yield all([
+    fork(watchUploadImages),
     fork(watchLikePost),
     fork(watchUnLikePost),
     fork(watchAddPost),
