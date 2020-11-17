@@ -1,13 +1,24 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Router from 'next/router';
 import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
+import { LOAD_FOLLOWERS_TYPE, LOAD_FOLLOWINGS_TYPE } from '../reducers/user';
 
 const Profile = () => {
+  const dispatch = useDispatch();
+
   const { me } = useSelector((state) => state.user);
+  useEffect(() => {
+    dispatch({
+      type: LOAD_FOLLOWERS_TYPE.REQUEST,
+    });
+    dispatch({
+      type: LOAD_FOLLOWINGS_TYPE.REQUEST,
+    });
+  }, []);
 
   useEffect(() => {
     if (!(me && me.id)) {
@@ -26,8 +37,8 @@ const Profile = () => {
       </Head>
       <AppLayout>
         <NicknameEditForm />
-        {/* <FollowList data={me.Followings} isfollower={false} /> */}
-        {/* <FollowList data={me.Followers} isfollower /> */}
+        <FollowList data={me.Followings} isfollower={false} />
+        <FollowList data={me.Followers} isfollower />
       </AppLayout>
     </>
   );

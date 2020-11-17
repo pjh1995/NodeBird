@@ -9,6 +9,8 @@ import {
   FOLLOW_TYPE,
   LOAD_USER_TYPE,
   CHANGE_NICKNAME_TYPE,
+  LOAD_FOLLOWINGS_TYPE,
+  LOAD_FOLLOWERS_TYPE,
 } from '../reducers/user';
 
 function loadUserAPI() {
@@ -37,6 +39,7 @@ function logInAPI(data) {
 function* logIn(action) {
   try {
     const result = yield call(logInAPI, action.data);
+    console.log(result);
     yield put({
       type: LOG_IN_TYPE.SUCCESS,
       data: result.data,
@@ -127,6 +130,44 @@ function* unfollow(action) {
   }
 }
 
+function loadFollowingsAPI(data) {
+  return axios.get('/user/followings', data);
+}
+function* loadFollowings(action) {
+  try {
+    const result = yield call(loadFollowingsAPI, action.data);
+    yield delay(1000);
+    yield put({
+      type: LOAD_FOLLOWINGS_TYPE.SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_FOLLOWINGS_TYPE.FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function loadFollowersAPI(data) {
+  return axios.get('/user/followers', data);
+}
+function* loadFollowers(action) {
+  try {
+    const result = yield call(loadFollowersAPI, action.data);
+    yield delay(1000);
+    yield put({
+      type: LOAD_FOLLOWERS_TYPE.SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_FOLLOWERS_TYPE.FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function changeNicknameAPI(data) {
   return axios.patch('/user/nickname', { nickname: data });
 }
@@ -170,6 +211,14 @@ function* watchUnfollow() {
   yield takeLatest(UNFOLLOW_TYPE.REQUEST, unfollow);
 }
 
+function* watchLoadFollowings() {
+  yield takeLatest(LOAD_FOLLOWINGS_TYPE.REQUEST, loadFollowings);
+}
+
+function* watchLoadFollowers() {
+  yield takeLatest(LOAD_FOLLOWERS_TYPE.REQUEST, loadFollowers);
+}
+
 function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_TYPE.REQUEST, changeNickname);
 }
@@ -183,5 +232,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchUnfollow),
     fork(watchFollow),
+    fork(watchLoadFollowings),
+    fork(watchLoadFollowers),
   ]);
 }

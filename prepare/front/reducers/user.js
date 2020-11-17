@@ -14,15 +14,21 @@ export const initialState = {
   signUpLoading: false, // 회원가입 시도중
   signUpDone: false,
   signUpError: null,
-  changeNicknameLoading: false, // 낙네암 변경 시도중
+  changeNicknameLoading: false, // 닉네임 변경 시도중
   changeNicknameDone: false,
   changeNicknameError: null,
-  unfollowLoading: false, // 낙네암 변경 시도중
+  unfollowLoading: false, // 닉네임 변경 시도중
   unfollowDone: false,
   unfollowError: null,
-  followLoading: false, // 낙네암 변경 시도중
+  followLoading: false, // 닉네임 변경 시도중
   followDone: false,
   followError: null,
+  loadFollowingsLoading: false,
+  loadFollowingsDone: false,
+  loadFollowingsError: null,
+  loadFollowersLoading: false,
+  loadFollowersDone: false,
+  loadFollowersError: null,
   me: null,
   signUpData: {},
   loginData: {},
@@ -53,36 +59,18 @@ export const logoutRequestAction = (data) => {
 };
 
 export const SIGN_UP_TYPE = makeActionType('SIGN_UP');
-export const signupRequestAction = (data) => {
-  return {
-    type: SIGN_UP_TYPE.REQUEST,
-    data,
-  };
-};
 
 export const CHANGE_NICKNAME_TYPE = makeActionType('CHANGE_NICKNAME');
-export const changeNicknameRequestAction = (data) => {
-  return {
-    type: CHANGE_NICKNAME_TYPE.REQUEST,
-    data,
-  };
-};
 
 export const UNFOLLOW_TYPE = makeActionType('UNFOLLOW');
-export const unfollowRequestAction = (data) => {
-  return {
-    type: UNFOLLOW_TYPE.REQUEST,
-    data,
-  };
-};
 
 export const FOLLOW_TYPE = makeActionType('FOLLOW');
-export const followRequestAction = (data) => {
-  return {
-    type: FOLLOW_TYPE.REQUEST,
-    data,
-  };
-};
+
+export const LOAD_FOLLOWERS_TYPE = makeActionType('LOAD_FOLLOWERS');
+
+export const LOAD_FOLLOWINGS_TYPE = makeActionType('LOAD_FOLLOWINGS');
+
+export const BLOCK_FOLLOWER_TYPE = makeActionType('BLOCK_FOLLOWER');
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
@@ -208,6 +196,40 @@ const reducer = (state = initialState, action) => {
       case FOLLOW_TYPE.FAILURE: {
         draft.followLoading = false;
         draft.followError = action.error;
+        break;
+      }
+      case LOAD_FOLLOWINGS_TYPE.REQUEST: {
+        draft.loadFollowingsLoading = true;
+        draft.loadFollowingsDone = false;
+        draft.loadFollowingsError = null;
+        break;
+      }
+      case LOAD_FOLLOWINGS_TYPE.SUCCESS: {
+        draft.loadFollowingsLoading = false;
+        draft.me.Followings = action.data;
+        draft.loadFollowingsDone = true;
+        break;
+      }
+      case LOAD_FOLLOWINGS_TYPE.FAILURE: {
+        draft.loadFollowingsLoading = false;
+        draft.loadFollowingsError = action.error;
+        break;
+      }
+      case LOAD_FOLLOWERS_TYPE.REQUEST: {
+        draft.loadFollowersLoading = true;
+        draft.loadFollowersDone = false;
+        draft.loadFollowersError = null;
+        break;
+      }
+      case LOAD_FOLLOWERS_TYPE.SUCCESS: {
+        draft.loadFollowersLoading = false;
+        draft.me.Followers = action.data;
+        draft.loadFollowersDone = true;
+        break;
+      }
+      case LOAD_FOLLOWERS_TYPE.FAILURE: {
+        draft.loadFollowersLoading = false;
+        draft.loadFollowersError = action.error;
         break;
       }
       case ADD_POST_TO_ME: {
