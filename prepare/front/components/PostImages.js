@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
-import PropTypes from "prop-types";
-import { PlusOutlined } from "@ant-design/icons";
-import ImagesZoom from "./ImagesZoom";
+import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { PlusOutlined } from '@ant-design/icons';
+import ImagesZoom from './ImagesZoom';
 
 const PostImages = ({ images, content }) => {
   const [showImagesZoom, setShowImageszoom] = useState(false);
@@ -15,12 +15,12 @@ const PostImages = ({ images, content }) => {
     return (
       <img
         role="presentation"
-        src={src}
+        src={`http://localhost:3065/${src}`}
         alt={content}
         width={`${width}%`}
         height="100%"
         onClick={onZoom}
-        style={{ width: `${width}%`, display: "inline-block" }}
+        style={{ width: `${width}%`, display: 'inline-block' }}
       />
     );
   };
@@ -37,10 +37,10 @@ const PostImages = ({ images, content }) => {
         <div
           role="presentation"
           style={{
-            display: "inline-block",
-            width: "50%",
-            textAlign: "center",
-            verticalAlign: "middle",
+            display: 'inline-block',
+            width: '50%',
+            textAlign: 'center',
+            verticalAlign: 'middle',
           }}
           onClick={onZoom}
         >
@@ -59,7 +59,7 @@ PostImages.propTypes = {
   images: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string,
-    })
+    }),
   ).isRequired,
   content: PropTypes.string,
 };

@@ -40,13 +40,6 @@ export const loadPostsAction = (data) => {
 
 export const ADD_POST = makeActionType('ADD_POST');
 
-export const addPostAction = (data) => {
-  return {
-    type: ADD_POST.REQUEST,
-    data,
-  };
-};
-
 export const REMOVE_POST = makeActionType('REMOVE_POST');
 
 export const removePostAction = (data) => {
@@ -77,6 +70,8 @@ export const likePostAction = (data) => {
 export const UN_LIKE_POST = makeActionType('UN_LIKE_POST');
 
 export const UPLOAD_IMAGES = makeActionType('UPLOAD_IMAGES');
+
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 // 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성을 지키면서)
 const reducer = (state = initialState, action) => {
@@ -110,6 +105,7 @@ const reducer = (state = initialState, action) => {
         draft.mainPosts.unshift(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
+        draft.imagePaths = [];
         break;
       }
       case ADD_POST.FAILURE: {
@@ -214,6 +210,10 @@ const reducer = (state = initialState, action) => {
       case UPLOAD_IMAGES.FAILURE: {
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
+        break;
+      }
+      case REMOVE_IMAGE: {
+        draft.imagePaths = state.imagePaths.filter((v, i) => i !== action.data);
         break;
       }
       default:

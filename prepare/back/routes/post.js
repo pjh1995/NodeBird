@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const { Post, Comment, Image, User } = require('../models');
+const { Post, Comment, Image, User, Hashtag } = require('../models');
 const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
@@ -13,12 +13,61 @@ try {
   console.log('upload 폴더가 없으므로 생성합니다.');
   fs.mkdirSync('uploads');
 }
-router.post('/', isLoggedIn, async (req, res, next) => {
+
+const upload = multer({
+  storage: multer.diskStorage({
+    //우선은 하드디스크
+    destination(req, file, done) {
+      done(null, 'uploads');
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname); //확장자 추출 ex).png
+      const basename = path.basename(file.originalname, ext);
+      //basename(file) -> 강아지.png, basename(file,확장자) : 확장자를 제외한 파일 이름만 추출 -> 강아지
+      //https://uxicode.tistory.com/entry/nodejs-path-%EB%AA%A8%EB%93%88
+
+      //파일 이름이 중복되면 덮어씌워 지므로 이름을 변경해줌 ex)강아지.png -> 강아지123456789.png
+      done(null, basename + '_' + new Date().getTime() + ext);
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, //20mb
+});
+
+router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
   try {
+    const hashTagReg = /(#[^\s#]+)/g;
+    const hashTags = req.body.content.match(hashTagReg);
+
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+
+    if (hashTags) {
+      const result = await Promise.all(
+        hashTags.map((tag) =>
+          Hashtag.findOrCreate({
+            where: { name: tag.slice(1).toLowerCase() },
+          }),
+        ),
+      ); //[[노드,true],[리액트,false]]
+      await post.addHashtags(result.map((v) => v[0]));
+    }
+    // }#리액트 #노드 #어렵다 #공부 #싫어어어어어
+
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        //이미지를 여러개 올리면 image:['강아지.png','고양이.png'];
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image })),
+        );
+        await post.addImages(images);
+      } else {
+        //이미지를 한개 올리면 image:'강아지.png'
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
@@ -50,25 +99,6 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     console.error(err);
     next(err);
   }
-});
-
-const upload = multer({
-  storage: multer.diskStorage({
-    //우선은 하드디스크
-    destination(req, file, done) {
-      done(null, 'uploads');
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname); //확장자 추출 ex).png
-      const basename = path.basename(file.originalname, ext);
-      //basename(file) -> 강아지.png, basename(file,확장자) : 확장자를 제외한 파일 이름만 추출 -> 강아지
-      //https://uxicode.tistory.com/entry/nodejs-path-%EB%AA%A8%EB%93%88
-
-      //파일 이름이 중복되면 덮어씌워 지므로 이름을 변경해줌 ex)강아지.png -> 강아지123456789.png
-      done(null, basename + new Date().getTime() + ext);
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, //20mb
 });
 
 router.post(

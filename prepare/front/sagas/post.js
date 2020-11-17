@@ -32,7 +32,7 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post('/post', { content: data });
+  return axios.post('/post', data); //formData는 {content:data} 요론 식으로 감싸면 절대 안됨.
 }
 
 function* addPost(action) {
