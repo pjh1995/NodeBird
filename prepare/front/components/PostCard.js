@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Card, Popover, Avatar, List, Comment } from 'antd';
 import {
   RetweetOutlined,
@@ -129,7 +129,9 @@ const PostCard = ({ post }) => {
           >
             <Card.Meta
               avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
-              title={post.Retweet.User.nickname}
+              title={`${
+                post.Retweet.User.nickname
+              } ${post.Retweet.createdAt.slice(0, 10)}`}
               description={
                 post.Retweet.content && (
                   <PostCardContent postData={post.Retweet.content} />
@@ -140,7 +142,7 @@ const PostCard = ({ post }) => {
         ) : (
           <Card.Meta
             avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-            title={post.User.nickname}
+            title={`${post.User.nickname} ${post.createdAt.slice(0, 10)}`}
             description={
               post.content && <PostCardContent postData={post.content} />
             }
