@@ -27,6 +27,9 @@ export const initialState = {
   uploadImagesDone: false,
   uploadImagesLoading: false,
   uploadImagesError: null,
+  retweetPostDone: false,
+  retweetPostLoading: false,
+  retweetPostError: null,
 };
 
 export const LOAD_POSTS = makeActionType('LOAD_POSTS');
@@ -73,6 +76,8 @@ export const UPLOAD_IMAGES = makeActionType('UPLOAD_IMAGES');
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
+export const RETWEET_POST = makeActionType('RETWEET_POST');
+
 // 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성을 지키면서)
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -87,7 +92,8 @@ const reducer = (state = initialState, action) => {
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
         draft.mainPosts = action.data.concat(draft.mainPosts);
-        draft.hasMorePosts = draft.mainPosts.length < 30;
+        // draft.mainPosts.unshift(action.data);
+        draft.hasMorePosts = action.data.length === 10;
         break;
       }
       case LOAD_POSTS.FAILURE: {
@@ -214,6 +220,23 @@ const reducer = (state = initialState, action) => {
       }
       case REMOVE_IMAGE: {
         draft.imagePaths = state.imagePaths.filter((v, i) => i !== action.data);
+        break;
+      }
+      case RETWEET_POST.REQUEST: {
+        draft.retweetPostLoading = true;
+        draft.retweetPostDone = false;
+        draft.retweetPostError = null;
+        break;
+      }
+      case RETWEET_POST.SUCCESS: {
+        draft.retweetPostLoading = false;
+        draft.retweetPostDone = true;
+        draft.mainPosts.join(action.data);
+        break;
+      }
+      case RETWEET_POST.FAILURE: {
+        draft.retweetPostLoading = false;
+        draft.retweetPostError = action.error;
         break;
       }
       default:

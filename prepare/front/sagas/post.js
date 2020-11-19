@@ -9,16 +9,17 @@ import {
   LIKE_POST,
   UN_LIKE_POST,
   UPLOAD_IMAGES,
+  RETWEET_POST,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
-function loadPostAPI(data) {
-  return axios.get('/posts', data);
+function loadPostAPI(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostAPI, action.data);
+    const result = yield call(loadPostAPI, action.lastId);
     yield put({
       type: LOAD_POSTS.SUCCESS,
       data: result.data,
@@ -32,7 +33,7 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post('/post', data); //formData는 {content:data} 요론 식으로 감싸면 절대 안됨.
+  return axios.post('/post', data); // formData는 {content:data} 요론 식으로 감싸면 절대 안됨.
 }
 
 function* addPost(action) {
@@ -157,6 +158,26 @@ function* uploadImages(action) {
   }
 }
 
+function retweetPostAPI(data) {
+  return axios.post(`/post/${data}/retweet`);
+}
+
+function* retweetPost(action) {
+  try {
+    const result = yield call(retweetPostAPI, action.data);
+    yield put({
+      type: RETWEET_POST.SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: RETWEET_POST.FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield throttle(5000, LOAD_POSTS.REQUEST, loadPosts);
 }
@@ -185,6 +206,10 @@ function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES.REQUEST, uploadImages);
 }
 
+function* watchRetweetPost() {
+  yield takeLatest(RETWEET_POST.REQUEST, retweetPost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchUploadImages),
@@ -194,5 +219,6 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchAddComment),
     fork(watchLoadPosts),
+    fork(watchRetweetPost),
   ]);
 }

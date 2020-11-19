@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Button, Card, Popover, Avatar, List, Comment } from 'antd';
 import {
   RetweetOutlined,
@@ -13,40 +13,64 @@ import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
-import { REMOVE_POST, LIKE_POST, UN_LIKE_POST } from '../reducers/post';
+import {
+  REMOVE_POST,
+  LIKE_POST,
+  UN_LIKE_POST,
+  RETWEET_POST,
+} from '../reducers/post';
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const [commentFormOpend, setCommentFormOpend] = useState(false);
   const { removePostLoading } = useSelector((state) => state.post);
+  const id = useSelector((state) => state.user.me?.id);
+  const liked = post.Likers.find((v) => v.id === id);
 
   const onLike = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
       type: LIKE_POST.REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
   const onUnLike = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
       type: UN_LIKE_POST.REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpend((prev) => !prev);
   }, [commentFormOpend]);
 
   const onRemovePost = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
       type: REMOVE_POST.REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
-  const id = useSelector((state) => state.user.me?.id);
-  const liked = post.Likers.find((v) => v.id === id);
+  const onRetweet = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
+      type: RETWEET_POST.REQUEST,
+      data: post.id,
+    });
+  }, [id]);
+
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
@@ -56,7 +80,7 @@ const PostCard = ({ post }) => {
           )
         }
         actions={[
-          <RetweetOutlined key="retweet" />,
+          <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (
             <HeartTwoTone twoToneColor="#eb2f96" onClick={onUnLike} />
           ) : (
@@ -87,15 +111,41 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        title={
+          post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : ''
+        }
         extra={id && id !== post.User.id && <FollowButton post={post} />}
       >
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          title={post.User.nickname}
-          description={
-            post.content && <PostCardContent postData={post.content} />
-          }
-        />
+        {post.RetweetId && post.Retweet ? (
+          <Card
+            cover={
+              post.Retweet.Images[0] && (
+                <PostImages
+                  images={post.Retweet.Images}
+                  content={post.Retweet.content}
+                />
+              )
+            }
+          >
+            <Card.Meta
+              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+              title={post.Retweet.User.nickname}
+              description={
+                post.Retweet.content && (
+                  <PostCardContent postData={post.Retweet.content} />
+                )
+              }
+            />
+          </Card>
+        ) : (
+          <Card.Meta
+            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            title={post.User.nickname}
+            description={
+              post.content && <PostCardContent postData={post.content} />
+            }
+          />
+        )}
       </Card>
       {commentFormOpend && (
         <div>
@@ -132,6 +182,8 @@ PostCard.propTypes = {
     createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
+    RetweetId: PropTypes.number,
+    Retweet: PropTypes.object,
   }).isRequired,
 };
 export default PostCard;
