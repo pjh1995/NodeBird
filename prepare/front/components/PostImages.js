@@ -10,7 +10,7 @@ const PostImages = ({ images, content }) => {
     setShowImageszoom(true);
   }, []);
 
-  // eslint-disable-next-line react/prop-types
+  // eslint-disable-next-line react/prop-types.
   const Image = ({ src, width = 50 }) => {
     return (
       <img
