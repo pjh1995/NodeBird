@@ -30,6 +30,9 @@ router.get('/:userId', async (req, res, next) => {
     const fullUserWithoutPassword = await getFullUserWithoutPassword(
       req.params.userId,
     );
+    if (!fullUserWithoutPassword) {
+      return res.status(404).send('존재하지 않는 사용자 입니다.');
+    }
     res.status(200).json(fullUserWithoutPassword);
   } catch (err) {
     console.error(err);
