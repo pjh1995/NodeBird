@@ -12,10 +12,30 @@ import {
   LOAD_FOLLOWINGS,
   LOAD_FOLLOWERS,
   BLOCK_FOLLOWER,
+  LOAD_MY_INFO,
 } from '../reducers/user';
 
-function loadUserAPI() {
+function loadMyInfoAPI() {
   return axios.get('/user');
+}
+
+function* loadMyInfo(action) {
+  try {
+    const result = yield call(loadMyInfoAPI, action.data);
+    yield put({
+      type: LOAD_MY_INFO.SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_MY_INFO.FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function loadUserAPI(data) {
+  return axios.get(`/user/${data}`);
 }
 
 function* loadUser(action) {
@@ -207,6 +227,10 @@ function* changeNickname(action) {
   }
 }
 
+function* watchLoadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO.REQUEST, loadMyInfo);
+}
+
 function* watchLoadUser() {
   yield takeLatest(LOAD_USER.REQUEST, loadUser);
 }
@@ -250,6 +274,7 @@ function* watchChangeNickname() {
 export default function* userSaga() {
   yield all([
     fork(watchChangeNickname),
+    fork(watchLoadMyInfo),
     fork(watchLoadUser),
     fork(watchLogin),
     fork(watchLogOut),

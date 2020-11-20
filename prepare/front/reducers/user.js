@@ -2,6 +2,9 @@ import produce from 'immer';
 import { makeActionType } from './index';
 
 export const initialState = {
+  loadMyInfoLoading: false, // 새로고침 시 로그인 정보 받아오기.
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
   loadUserLoading: false, // 새로고침 시 로그인 정보 받아오기.
   loadUserDone: false,
   loadUserError: null,
@@ -30,9 +33,10 @@ export const initialState = {
   loadFollowersDone: false,
   loadFollowersError: null,
   me: null,
-  signUpData: {},
-  loginData: {},
+  userInfo: null,
 };
+
+export const LOAD_MY_INFO = makeActionType('LOAD_MY_INFO');
 
 export const LOAD_USER = makeActionType('LOAD_USER');
 export const loadUserRequestAction = (data) => {
@@ -78,6 +82,23 @@ export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_MY_INFO.REQUEST: {
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoDone = false;
+        draft.loadMyInfoError = null;
+        break;
+      }
+      case LOAD_MY_INFO.SUCCESS: {
+        draft.loadMyInfoLoading = false;
+        draft.me = action.data;
+        draft.loadMyInfoDone = true;
+        break;
+      }
+      case LOAD_MY_INFO.FAILURE: {
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.error;
+        break;
+      }
       case LOAD_USER.REQUEST: {
         draft.loadUserLoading = true;
         draft.loadUserDone = false;
@@ -86,7 +107,7 @@ const reducer = (state = initialState, action) => {
       }
       case LOAD_USER.SUCCESS: {
         draft.loadUserLoading = false;
-        draft.me = action.data;
+        draft.userInfo = action.data;
         draft.loadUserDone = true;
         break;
       }

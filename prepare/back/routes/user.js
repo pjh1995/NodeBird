@@ -9,6 +9,7 @@ const { getUserFromUserId, getFullUserWithoutPassword } = require('./common');
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
+  console.log(req.headers);
   try {
     console.log(req.user);
     if (!req.user) {
@@ -16,6 +17,18 @@ router.get('/', async (req, res, next) => {
     }
     const fullUserWithoutPassword = await getFullUserWithoutPassword(
       req.user.id,
+    );
+    res.status(200).json(fullUserWithoutPassword);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+router.get('/:userId', async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await getFullUserWithoutPassword(
+      req.params.userId,
     );
     res.status(200).json(fullUserWithoutPassword);
   } catch (err) {
