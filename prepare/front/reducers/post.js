@@ -6,6 +6,7 @@ export const initialState = {
   mainPosts: [],
   imagePaths: [],
   hasMorePosts: true,
+  singlePost: null,
   loadPostsDone: false,
   loadPostsLoading: false,
   loadPostsError: null,
@@ -40,6 +41,8 @@ export const loadPostsAction = (data) => {
     data,
   };
 };
+
+export const LOAD_POST = makeActionType('LOAD_POST');
 
 export const ADD_POST = makeActionType('ADD_POST');
 
@@ -98,6 +101,24 @@ const reducer = (state = initialState, action) => {
       case LOAD_POSTS.FAILURE: {
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
+        break;
+      }
+      case LOAD_POST.REQUEST: {
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      }
+      case LOAD_POST.SUCCESS: {
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.data;
+        // draft.mainPosts = [action.data];
+        break;
+      }
+      case LOAD_POST.FAILURE: {
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
         break;
       }
       case ADD_POST.REQUEST: {
