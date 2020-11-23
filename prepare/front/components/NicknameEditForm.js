@@ -37,7 +37,7 @@ const NicknameEditForm = () => {
         value={nickname}
         onChange={onChangeNickname}
         addonBefore="닉네임"
-        enterButton="수정"
+        enterButton="수정."
         onSearch={onSubmit}
       />
     </Form>
