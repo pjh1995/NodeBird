@@ -11,7 +11,7 @@ const path = require('path');
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
-
+const hashtagRouter = require('./routes/hashtag');
 const userRouter = require('./routes/user');
 const db = require('./models');
 const passportConfig = require('./passport');
@@ -61,6 +61,7 @@ app.use(passport.session());
 //prefix
 app.use('/post', postRouter);
 app.use('/posts', postsRouter);
+app.use('/hashtag', hashtagRouter);
 app.use('/user', userRouter);
 
 //에러처리용

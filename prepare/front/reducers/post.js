@@ -42,6 +42,10 @@ export const loadPostsAction = (data) => {
   };
 };
 
+export const LOAD_USER_POSTS = makeActionType('LOAD_USER_POSTS');
+
+export const LOAD_HASHTAG_POSTS = makeActionType('LOAD_HASHTAG_POSTS');
+
 export const LOAD_POST = makeActionType('LOAD_POST');
 
 export const ADD_POST = makeActionType('ADD_POST');
@@ -85,12 +89,16 @@ export const RETWEET_POST = makeActionType('RETWEET_POST');
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_HASHTAG_POSTS.REQUEST:
+      case LOAD_USER_POSTS.REQUEST:
       case LOAD_POSTS.REQUEST: {
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
         draft.loadPostsError = null;
         break;
       }
+      case LOAD_HASHTAG_POSTS.SUCCESS:
+      case LOAD_USER_POSTS.SUCCESS:
       case LOAD_POSTS.SUCCESS: {
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
@@ -98,6 +106,8 @@ const reducer = (state = initialState, action) => {
         draft.hasMorePosts = action.data.length === 10 || action.data === 0;
         break;
       }
+      case LOAD_HASHTAG_POSTS.FAILURE:
+      case LOAD_USER_POSTS.FAILURE:
       case LOAD_POSTS.FAILURE: {
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
