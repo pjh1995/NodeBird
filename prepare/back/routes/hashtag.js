@@ -21,7 +21,10 @@ router.get('/:hashtag', async (req, res, next) => {
         [Comment, 'createdAt', 'DESC'],
       ],
       include: [
-        { model: Hashtag, where: { name: req.params.hashtag } },
+        {
+          model: Hashtag,
+          where: { name: decodeURIComponent(req.params.hashtag) },
+        },
         { model: User, attributes: ['id', 'nickname'] },
         { model: Image },
         {

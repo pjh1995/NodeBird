@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Card } from 'antd';
 import { END } from 'redux-saga';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import axios from 'axios';
-import { LOAD_USER_POSTS } from '../../reducers/post';
-import { LOAD_USER, LOAD_MY_INFO } from '../../reducers/user';
+import { LOAD_HASHTAG_POSTS } from '../../reducers/post';
+import { LOAD_MY_INFO } from '../../reducers/user';
 import PostCard from '../../components/PostCard';
 import AppLayout from '../../components/AppLayout';
 import wrapper from '../../store/configureStore';
@@ -15,11 +14,10 @@ import wrapper from '../../store/configureStore';
 const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { id } = router.query;
+  const { tag } = router.query;
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post,
   );
-  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     function onScroll() {
@@ -30,9 +28,9 @@ const User = () => {
         if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
-            type: LOAD_USER_POSTS.REQUEST,
+            type: LOAD_HASHTAG_POSTS.REQUEST,
             lastId,
-            data: id,
+            data: tag,
           });
         }
       }
@@ -41,47 +39,21 @@ const User = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [hasMorePosts, loadPostsLoading, mainPosts, id]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts, tag]);
 
   return (
     <AppLayout>
       <Head>
-        <title>{userInfo.nickname}님의 게시글</title>
-        <meta name="description" content={`${userInfo.nickname}님의 게시글`} />
-        <meta property="og:title" content={`${userInfo.nickname}님의 게시글`} />
-        <meta
-          property="og:description"
-          content={`${userInfo.nickname}님의 게시글`}
-        />
+        <title>{tag} 검색 결과</title>
+        <meta name="description" content={`${tag} 검색 결과`} />
+        <meta property="og:title" content={`${tag} 검색 결과`} />
+        <meta property="og:description" content={`${tag} 검색 결과`} />
         <meta property="og:image" content="https://nodebird.com/favicon.ico" />
-        <meta property="og:url" content={`https://nodebird.com/user/${id}`} />
+        <meta
+          property="og:url"
+          content={`https://nodebird.com/hashtag/${tag}`}
+        />
       </Head>
-      {userInfo ? (
-        <Card
-          actions={[
-            <div key="twit">
-              짹짹
-              <br />
-              {userInfo.Posts ? userInfo.Posts.length : 0}
-            </div>,
-            <div key="followings">
-              팔로잉
-              <br />
-              {userInfo.Followings ? userInfo.Followings.length : 0}
-            </div>,
-            <div key="follower">
-              팔로워
-              <br />
-              {userInfo.Followers ? userInfo.Followers.length : 0}
-            </div>,
-          ]}
-        >
-          <Card.Meta
-            avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
-            title={userInfo.nickname}
-          />
-        </Card>
-      ) : null}
       {mainPosts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}
@@ -100,15 +72,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
 
     context.store.dispatch({
-      type: LOAD_USER_POSTS.REQUEST,
-      data: context.params.id,
+      type: LOAD_HASHTAG_POSTS.REQUEST,
+      data: context.params.tag,
     });
     context.store.dispatch({
       type: LOAD_MY_INFO.REQUEST,
-    });
-    context.store.dispatch({
-      type: LOAD_USER.REQUEST,
-      data: context.params.id,
     });
     context.store.dispatch(END);
     await context.store.sagaTask.toPromise(); // success될때까지 기다려줌.
