@@ -14,6 +14,7 @@ import wrapper from '../../store/configureStore';
 const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const { tag } = router.query;
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post,
