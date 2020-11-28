@@ -8,7 +8,9 @@ import { Avatar } from 'antd';
 const CustomAvatar = ({ User }) => {
   return (
     <Link href={`/user/${User.id}`}>
-      <Avatar>{User.nickname[0]}</Avatar>
+      <a>
+        <Avatar>{User.nickname[0]}</Avatar>
+      </a>
     </Link>
   );
 };
