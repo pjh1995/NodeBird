@@ -1,14 +1,29 @@
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import PropTypes from 'prop-types';
+import moment from 'moment';
+
 import { Button, Card, Popover, List, Comment } from 'antd';
 import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined, HeartTwoTone } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
 import CustomAvatar from './CustomAvatar';
+
 import { REMOVE_POST, LIKE_POST, UN_LIKE_POST, RETWEET_POST } from '../reducers/post';
+
+moment.locale('ko');
+
+const PostCardStyled = styled.div`
+  margin-bottom: 20px;
+  .date {
+    float: right;
+  }
+`;
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -62,7 +77,7 @@ const PostCard = ({ post }) => {
   }, [id]);
 
   return (
-    <div style={{ marginBottom: 20 }}>
+    <PostCardStyled>
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} content={post.content} />}
         actions={[
@@ -100,18 +115,22 @@ const PostCard = ({ post }) => {
           <Card
             cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} content={post.Retweet.content} />}
           >
+            <div className="date">{moment(post.Retweet.createdAt).format('YYYY.MM.DD')}</div>
             <Card.Meta
               avatar={<CustomAvatar User={post.Retweet.User} />}
-              title={`${post.Retweet.User.nickname} ${post.Retweet.createdAt.slice(0, 10)}`}
+              title={post.Retweet.User.nickname}
               description={post.Retweet.content && <PostCardContent postData={post.Retweet.content} />}
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={<CustomAvatar User={post.User} />}
-            title={`${post.User.nickname} ${post.createdAt.slice(0, 10)}`}
-            description={post.content && <PostCardContent postData={post.content} />}
-          />
+          <>
+            <div className="date">{moment(post.createdAt).format('YYYY.MM.DD')}</div>
+            <Card.Meta
+              avatar={<CustomAvatar User={post.User} />}
+              title={post.User.nickname}
+              description={post.content && <PostCardContent postData={post.content} />}
+            />
+          </>
         )}
       </Card>
       {commentFormOpend && (
@@ -133,7 +152,7 @@ const PostCard = ({ post }) => {
           />
         </div>
       )}
-    </div>
+    </PostCardStyled>
   );
 };
 
