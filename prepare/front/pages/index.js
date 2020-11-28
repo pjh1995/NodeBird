@@ -14,12 +14,7 @@ import wrapper from '../store/configureStore';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const {
-    mainPosts,
-    hasMorePosts,
-    loadPostsLoading,
-    retweetPostError,
-  } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePosts, loadPostsLoading, retweetPostError } = useSelector((state) => state.post);
 
   useEffect(() => {
     if (retweetPostError) {
@@ -29,10 +24,7 @@ const Home = () => {
 
   useEffect(() => {
     function onScroll() {
-      if (
-        window.scrollY + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
-      ) {
+      if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
         if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
@@ -76,6 +68,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
     context.store.dispatch(END);
     await context.store.sagaTask.toPromise(); // success될때까지 기다려줌.
+    // return { props: { data: 123 } }; // 서버쪽에서 받은거를 return 하여 컴포넌트로 전달
   },
 ); // 페이지가 그려지기 전 실행 됨.
 
