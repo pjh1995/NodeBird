@@ -1,24 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { Button, Card, Popover, Avatar, List, Comment } from 'antd';
-import {
-  RetweetOutlined,
-  HeartOutlined,
-  MessageOutlined,
-  EllipsisOutlined,
-  HeartTwoTone,
-} from '@ant-design/icons';
+import { Button, Card, Popover, List, Comment } from 'antd';
+import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined, HeartTwoTone } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import FollowButton from './FollowButton';
 import PostCardContent from './PostCardContent';
-import {
-  REMOVE_POST,
-  LIKE_POST,
-  UN_LIKE_POST,
-  RETWEET_POST,
-} from '../reducers/post';
+import CustomAvatar from './CustomAvatar';
+import { REMOVE_POST, LIKE_POST, UN_LIKE_POST, RETWEET_POST } from '../reducers/post';
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -74,11 +64,7 @@ const PostCard = ({ post }) => {
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
-        cover={
-          post.Images[0] && (
-            <PostImages images={post.Images} content={post.content} />
-          )
-        }
+        cover={post.Images[0] && <PostImages images={post.Images} content={post.content} />}
         actions={[
           <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (
@@ -94,11 +80,7 @@ const PostCard = ({ post }) => {
                 {id && id === post.User.id ? (
                   <>
                     <Button>수정</Button>
-                    <Button
-                      type="danger"
-                      loading={removePostLoading}
-                      onClick={onRemovePost}
-                    >
+                    <Button type="danger" loading={removePostLoading} onClick={onRemovePost}>
                       삭제
                     </Button>
                   </>
@@ -111,41 +93,24 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
-        title={
-          post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : ''
-        }
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : ''}
         extra={id && id !== post.User.id && <FollowButton post={post} />}
       >
         {post.RetweetId && post.Retweet ? (
           <Card
-            cover={
-              post.Retweet.Images[0] && (
-                <PostImages
-                  images={post.Retweet.Images}
-                  content={post.Retweet.content}
-                />
-              )
-            }
+            cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} content={post.Retweet.content} />}
           >
             <Card.Meta
-              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
-              title={`${
-                post.Retweet.User.nickname
-              } ${post.Retweet.createdAt.slice(0, 10)}`}
-              description={
-                post.Retweet.content && (
-                  <PostCardContent postData={post.Retweet.content} />
-                )
-              }
+              avatar={<CustomAvatar User={post.Retweet.User} />}
+              title={`${post.Retweet.User.nickname} ${post.Retweet.createdAt.slice(0, 10)}`}
+              description={post.Retweet.content && <PostCardContent postData={post.Retweet.content} />}
             />
           </Card>
         ) : (
           <Card.Meta
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            avatar={<CustomAvatar User={post.User} />}
             title={`${post.User.nickname} ${post.createdAt.slice(0, 10)}`}
-            description={
-              post.content && <PostCardContent postData={post.content} />
-            }
+            description={post.content && <PostCardContent postData={post.content} />}
           />
         )}
       </Card>
@@ -160,7 +125,7 @@ const PostCard = ({ post }) => {
               <li>
                 <Comment
                   author={item.User.nickname}
-                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                  avatar={<CustomAvatar User={item.User} />}
                   content={item.content}
                 />
               </li>

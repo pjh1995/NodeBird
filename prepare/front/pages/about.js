@@ -3,8 +3,10 @@ import { useSelector } from 'react-redux';
 import Head from 'next/head';
 import { END } from 'redux-saga';
 
-import { Avatar, Card } from 'antd';
+import { Card } from 'antd';
 import AppLayout from '../components/AppLayout';
+import CustomAvatar from '../components/CustomAvatar';
+
 import wrapper from '../store/configureStore';
 import { LOAD_USER } from '../reducers/user';
 
@@ -37,7 +39,7 @@ const About = () => {
           ]}
         >
           <Card.Meta
-            avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
+            avatar={<CustomAvatar User={userInfo} />}
             title={userInfo.nickname}
             description="노드버드 매니아"
           />

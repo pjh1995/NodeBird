@@ -1,15 +1,24 @@
-import React, { useCallback } from 'react';
-import { Card, Avatar, Button } from 'antd';
+import React, { useCallback, useEffect } from 'react';
+import { Card, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import Router from 'next/router';
+import CustomAvatar from './CustomAvatar';
 import { logoutRequestAction } from '../reducers/user';
 
 const UserProfile = () => {
   const dispatch = useDispatch();
-  const { me, logOutLoading } = useSelector((state) => state.user);
+  const { me, logOutLoading, logOutDone } = useSelector((state) => state.user);
 
   const onLogout = useCallback(() => {
     dispatch(logoutRequestAction());
   }, []);
+
+  useEffect(() => {
+    if (logOutDone) {
+      Router.push('/');
+    }
+  }, [logOutDone]);
+
   return (
     <Card
       actions={[
@@ -30,10 +39,7 @@ const UserProfile = () => {
         </div>,
       ]}
     >
-      <Card.Meta
-        avatar={<Avatar>{me.nickname[0]}</Avatar>}
-        title={me.nickname}
-      />
+      <Card.Meta avatar={<CustomAvatar User={me} />} title={me.nickname} />
       <Button onClick={onLogout} loading={logOutLoading}>
         로그아웃
       </Button>

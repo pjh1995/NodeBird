@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Card } from 'antd';
+import { Card } from 'antd';
 import { END } from 'redux-saga';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -10,23 +10,19 @@ import { LOAD_USER_POSTS } from '../../reducers/post';
 import { LOAD_USER, LOAD_MY_INFO } from '../../reducers/user';
 import PostCard from '../../components/PostCard';
 import AppLayout from '../../components/AppLayout';
+import CustomAvatar from '../../components/CustomAvatar';
 import wrapper from '../../store/configureStore';
 
 const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post,
-  );
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
   const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     function onScroll() {
-      if (
-        window.scrollY + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
-      ) {
+      if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
         if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
@@ -49,10 +45,7 @@ const User = () => {
         <title>{userInfo.nickname}님의 게시글</title>
         <meta name="description" content={`${userInfo.nickname}님의 게시글`} />
         <meta property="og:title" content={`${userInfo.nickname}님의 게시글`} />
-        <meta
-          property="og:description"
-          content={`${userInfo.nickname}님의 게시글`}
-        />
+        <meta property="og:description" content={`${userInfo.nickname}님의 게시글`} />
         <meta property="og:image" content="https://nodebird.com/favicon.ico" />
         <meta property="og:url" content={`https://nodebird.com/user/${id}`} />
       </Head>
@@ -76,10 +69,7 @@ const User = () => {
             </div>,
           ]}
         >
-          <Card.Meta
-            avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
-            title={userInfo.nickname}
-          />
+          <Card.Meta avatar={<CustomAvatar User={userInfo} />} title={userInfo.nickname} />
         </Card>
       ) : null}
       {mainPosts.map((post) => (

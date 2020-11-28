@@ -3,6 +3,8 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { Avatar } from 'antd';
 
+// ToDo Custom Card.Meta 만들기.
+
 const CustomAvatar = ({ User }) => {
   return (
     <Link href={`/user/${User.id}`}>
