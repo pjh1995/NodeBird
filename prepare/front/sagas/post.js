@@ -30,7 +30,7 @@ function* loadPost(action) {
   } catch (err) {
     yield put({
       type: LOAD_POST.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -49,7 +49,7 @@ function* loadPosts(action) {
   } catch (err) {
     yield put({
       type: LOAD_POSTS.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -68,15 +68,13 @@ function* loadUserPosts(action) {
   } catch (err) {
     yield put({
       type: LOAD_USER_POSTS.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
 
 function loadHashtagPostsAPI(data, lastId) {
-  return axios.get(
-    `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`,
-  );
+  return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
 }
 
 function* loadHashtagPosts(action) {
@@ -89,7 +87,7 @@ function* loadHashtagPosts(action) {
   } catch (err) {
     yield put({
       type: LOAD_HASHTAG_POSTS.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -110,9 +108,10 @@ function* addPost(action) {
       data: result.data.id,
     });
   } catch (err) {
+    console.log(err);
     yield put({
       type: ADD_POST.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -135,7 +134,7 @@ function* removePost(action) {
   } catch (err) {
     yield put({
       type: REMOVE_POST.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -155,7 +154,7 @@ function* addComment(action) {
     console.error(err);
     yield put({
       type: ADD_COMMENT.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -175,7 +174,7 @@ function* likePost(action) {
     console.error(err);
     yield put({
       type: LIKE_POST.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -195,7 +194,7 @@ function* unLikePost(action) {
     console.error(err);
     yield put({
       type: UN_LIKE_POST.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -215,7 +214,7 @@ function* uploadImages(action) {
     console.error(err);
     yield put({
       type: UPLOAD_IMAGES.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -235,7 +234,7 @@ function* retweetPost(action) {
     console.error(err);
     yield put({
       type: RETWEET_POST.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }

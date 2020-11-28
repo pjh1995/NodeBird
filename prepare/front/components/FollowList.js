@@ -4,34 +4,27 @@ import { Button, Card, List } from 'antd';
 import { StopOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 
-// import styled from 'styled-components';
+import styled from 'styled-components';
+
 import { UNFOLLOW, BLOCK_FOLLOWER } from '../reducers/user';
 
-// const FollowListWrap = styled(List)`
-//   margin-bottom: 20px;
-// `;
+const FollowListWrap = styled(List)`
+  margin-bottom: 20px;
+`;
 
-// const loadMoreWrap = styled.div`
-//   text-align: center;
-//   margin: 10px 0;
-// `;
+const ListItem = styled(List.Item)`
+  margin-top: 20px;
+`;
 
-// const ListItem = styled(List.Item)`
-//   margin-top: 20px;
-// `;
+const LoadMoreWrap = styled.div`
+  text-align: center;
+  margin: 10px 0;
+`;
 
-const FollowList = ({ data, isfollower }) => {
+const FollowList = ({ data, isfollower, onClickMore, loading }) => {
   const dispatch = useDispatch();
   const header = <div>{isfollower ? '팔로워' : '팔로잉'}</div>;
   const grid = { gutter: 4, xs: 2, md: 3 };
-
-  const loadMore = () => {
-    return (
-      <div style={{ textAlign: 'center', magin: '10px 0' }}>
-        <Button>더 보기</Button>
-      </div>
-    );
-  };
 
   const onCancel = (id) => () => {
     const TYPE = isfollower ? BLOCK_FOLLOWER : UNFOLLOW;
@@ -42,30 +35,35 @@ const FollowList = ({ data, isfollower }) => {
     });
   };
   return (
-    <List
-      style={{ marginBottom: '20px' }}
+    <FollowListWrap
       grid={grid}
       size="small"
       header={header}
-      loadMore={loadMore}
+      loadMore={
+        <LoadMoreWrap>
+          <Button onClick={onClickMore} loading={loading}>
+            더 보기
+          </Button>
+        </LoadMoreWrap>
+      }
       bordered
       dataSource={data}
       renderItem={(item) => (
-        <List.Item style={{ marginTop: '20px' }}>
-          <Card
-            actions={[<StopOutlined key="stop" onClick={onCancel(item.id)} />]}
-          >
+        <ListItem>
+          <Card actions={[<StopOutlined key="stop" onClick={onCancel(item.id)} />]}>
             <Card.Meta description={item.nickname} />
           </Card>
-        </List.Item>
+        </ListItem>
       )}
     />
   );
 };
 
 FollowList.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
   isfollower: PropTypes.bool,
+  onClickMore: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default FollowList;

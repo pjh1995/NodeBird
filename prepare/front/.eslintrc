@@ -31,6 +31,7 @@
     "operator-linebreak": "off",
     "react/jsx-wrap-multilines": "off",
     "no-param-reassign": "off",
-    "no-alert": "off"
+    "no-alert": "off",
+    "max-len": "off"
   }
 }

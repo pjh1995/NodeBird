@@ -9,8 +9,6 @@ import {
   FOLLOW,
   LOAD_USER,
   CHANGE_NICKNAME,
-  LOAD_FOLLOWINGS,
-  LOAD_FOLLOWERS,
   BLOCK_FOLLOWER,
   LOAD_MY_INFO,
 } from '../reducers/user';
@@ -27,9 +25,10 @@ function* loadMyInfo(action) {
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: LOAD_MY_INFO.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -48,7 +47,7 @@ function* loadUser(action) {
   } catch (err) {
     yield put({
       type: LOAD_USER.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -68,7 +67,7 @@ function* logIn(action) {
   } catch (err) {
     yield put({
       type: LOG_IN.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -87,7 +86,7 @@ function* logOut() {
   } catch (err) {
     yield put({
       type: LOG_OUT.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -107,7 +106,7 @@ function* signUp(action) {
     console.error(err);
     yield put({
       type: SIGN_UP.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -127,7 +126,7 @@ function* follow(action) {
   } catch (err) {
     yield put({
       type: FOLLOW.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -146,45 +145,7 @@ function* unfollow(action) {
   } catch (err) {
     yield put({
       type: UNFOLLOW.FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function loadFollowingsAPI(data) {
-  return axios.get('/user/followings', data);
-}
-function* loadFollowings(action) {
-  try {
-    const result = yield call(loadFollowingsAPI, action.data);
-    yield delay(1000);
-    yield put({
-      type: LOAD_FOLLOWINGS.SUCCESS,
-      data: result.data,
-    });
-  } catch (err) {
-    yield put({
-      type: LOAD_FOLLOWINGS.FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
-function loadFollowersAPI(data) {
-  return axios.get('/user/followers', data);
-}
-function* loadFollowers(action) {
-  try {
-    const result = yield call(loadFollowersAPI, action.data);
-    yield delay(1000);
-    yield put({
-      type: LOAD_FOLLOWERS.SUCCESS,
-      data: result.data,
-    });
-  } catch (err) {
-    yield put({
-      type: LOAD_FOLLOWERS.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -203,7 +164,7 @@ function* blockFollower(action) {
   } catch (err) {
     yield put({
       type: BLOCK_FOLLOWER.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -222,7 +183,7 @@ function* changeNickname(action) {
   } catch (err) {
     yield put({
       type: CHANGE_NICKNAME.FAILURE,
-      error: err.response.data,
+      error: err.response ? err.response.data : err,
     });
   }
 }
@@ -255,14 +216,6 @@ function* watchUnfollow() {
   yield takeLatest(UNFOLLOW.REQUEST, unfollow);
 }
 
-function* watchLoadFollowings() {
-  yield takeLatest(LOAD_FOLLOWINGS.REQUEST, loadFollowings);
-}
-
-function* watchLoadFollowers() {
-  yield takeLatest(LOAD_FOLLOWERS.REQUEST, loadFollowers);
-}
-
 function* watchBlockFollower() {
   yield takeLatest(BLOCK_FOLLOWER.REQUEST, blockFollower);
 }
@@ -281,8 +234,6 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchUnfollow),
     fork(watchFollow),
-    fork(watchLoadFollowings),
-    fork(watchLoadFollowers),
     fork(watchBlockFollower),
   ]);
 }

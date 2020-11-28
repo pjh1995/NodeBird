@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
+import useSWR from 'swr';
 
 import { useSelector } from 'react-redux';
 
@@ -9,17 +10,48 @@ import { END } from 'redux-saga';
 import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
-import { LOAD_FOLLOWERS, LOAD_FOLLOWINGS } from '../reducers/user';
+import { LOAD_MY_INFO } from '../reducers/user';
 import wrapper from '../store/configureStore';
 
+const fetcher = (url) => axios.get(url, { withCredentials: true }).then((result) => result.data);
+const LIMIT_NUM = 3;
 const Profile = () => {
   const { me } = useSelector((state) => state.user);
+
+  const [followersLimit, setFollowersLimit] = useState(LIMIT_NUM);
+  const [followingsLimit, setFollowingsLimit] = useState(LIMIT_NUM);
+
+  const { data: followersData, error: followerError } = useSWR(
+    // redux 대신 사용가능
+    `http://localhost:3065/user/followers?limit=${followersLimit}`,
+    fetcher,
+  );
+  const { data: followingsData, error: followingError } = useSWR(
+    `http://localhost:3065/user/followings?limit=${followingsLimit}`,
+    fetcher,
+  );
 
   useEffect(() => {
     if (!(me && me.id)) {
       Router.push('/');
     }
   }, [me && me.id]);
+
+  const loadMoreFollowings = useCallback(() => {
+    setFollowingsLimit((prev) => prev + LIMIT_NUM);
+  }, []);
+
+  const loadMoreFollowers = useCallback(() => {
+    setFollowersLimit((prev) => prev + LIMIT_NUM);
+  }, []);
+
+  if (!me) {
+    return <div>내 정보 로딩중...</div>;
+  }
+  if (followerError || followingError) {
+    console.error(followerError || followingError);
+    return <div>팔로워/팔로잉 로딩 중 에러가 발생합니다.</div>;
+  }
 
   if (!me) {
     return null;
@@ -32,8 +64,18 @@ const Profile = () => {
       </Head>
       <AppLayout>
         <NicknameEditForm />
-        <FollowList data={me.Followings} isfollower={false} />
-        <FollowList data={me.Followers} isfollower />
+        <FollowList
+          data={followersData}
+          isfollower={false}
+          onClickMore={loadMoreFollowers}
+          loading={!followersData && !followerError}
+        />
+        <FollowList
+          data={followingsData}
+          isfollower
+          onClickMore={loadMoreFollowings}
+          loading={!followingsData && !followerError}
+        />
       </AppLayout>
     </>
   );
@@ -48,11 +90,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
     if (context.req && cookie) {
       axios.defaults.headers.Cookie = cookie;
     }
+
     context.store.dispatch({
-      type: LOAD_FOLLOWERS.REQUEST,
-    });
-    context.store.dispatch({
-      type: LOAD_FOLLOWINGS.REQUEST,
+      type: LOAD_MY_INFO.REQUEST,
     });
     context.store.dispatch(END);
     await context.store.sagaTask.toPromise(); // success될때까지 기다려줌.

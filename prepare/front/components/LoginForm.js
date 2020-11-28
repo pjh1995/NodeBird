@@ -45,13 +45,7 @@ const LoginForm = () => {
 
   return (
     <Form onFinish={onSubmitForm}>
-      <FormInput
-        inputName="user-email"
-        type="email"
-        labelText="이메일"
-        onChange={onChangeEmail}
-        value={email}
-      />
+      <FormInput inputName="user-email" type="email" labelText="이메일" onChange={onChangeEmail} value={email} />
       <FormInput
         inputName="user-password"
         labelText="비밀번호"

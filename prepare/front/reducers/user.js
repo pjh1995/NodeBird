@@ -70,10 +70,6 @@ export const UNFOLLOW = makeActionType('UNFOLLOW');
 
 export const FOLLOW = makeActionType('FOLLOW');
 
-export const LOAD_FOLLOWERS = makeActionType('LOAD_FOLLOWERS');
-
-export const LOAD_FOLLOWINGS = makeActionType('LOAD_FOLLOWINGS');
-
 export const BLOCK_FOLLOWER = makeActionType('BLOCK_FOLLOWER');
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
@@ -191,9 +187,7 @@ const reducer = (state = initialState, action) => {
       }
       case UNFOLLOW.SUCCESS: {
         draft.unfollowLoading = false;
-        draft.me.Followings = draft.me.Followings.filter(
-          (v) => v.id !== action.data.UserId,
-        );
+        draft.me.Followings = draft.me.Followings.filter((v) => v.id !== action.data.UserId);
         draft.unfollowDone = true;
         break;
       }
@@ -219,40 +213,6 @@ const reducer = (state = initialState, action) => {
         draft.followError = action.error;
         break;
       }
-      case LOAD_FOLLOWINGS.REQUEST: {
-        draft.loadFollowingsLoading = true;
-        draft.loadFollowingsDone = false;
-        draft.loadFollowingsError = null;
-        break;
-      }
-      case LOAD_FOLLOWINGS.SUCCESS: {
-        draft.loadFollowingsLoading = false;
-        draft.me.Followings = action.data;
-        draft.loadFollowingsDone = true;
-        break;
-      }
-      case LOAD_FOLLOWINGS.FAILURE: {
-        draft.loadFollowingsLoading = false;
-        draft.loadFollowingsError = action.error;
-        break;
-      }
-      case LOAD_FOLLOWERS.REQUEST: {
-        draft.loadFollowersLoading = true;
-        draft.loadFollowersDone = false;
-        draft.loadFollowersError = null;
-        break;
-      }
-      case LOAD_FOLLOWERS.SUCCESS: {
-        draft.loadFollowersLoading = false;
-        draft.me.Followers = action.data;
-        draft.loadFollowersDone = true;
-        break;
-      }
-      case LOAD_FOLLOWERS.FAILURE: {
-        draft.loadFollowersLoading = false;
-        draft.loadFollowersError = action.error;
-        break;
-      }
       case BLOCK_FOLLOWER.REQUEST: {
         draft.blockFollowerLoading = true;
         draft.blockFollowerDone = false;
@@ -261,9 +221,7 @@ const reducer = (state = initialState, action) => {
       }
       case BLOCK_FOLLOWER.SUCCESS: {
         draft.blockFollowerLoading = false;
-        draft.me.Followers = draft.me.Followers.filter(
-          (v) => v.id !== action.data.UserId,
-        );
+        draft.me.Followers = draft.me.Followers.filter((v) => v.id !== action.data.UserId);
         draft.blockFollowerDone = true;
         break;
       }
@@ -273,7 +231,11 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case ADD_POST_TO_ME: {
-        draft.me.Posts.unshift({ id: action.data });
+        if (draft.me.Posts) {
+          draft.me.Posts.unshift({ id: action.data });
+        } else {
+          draft.me = [{ id: action.data }];
+        }
         break;
       }
       case REMOVE_POST_OF_ME: {

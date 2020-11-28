@@ -9,36 +9,116 @@ const { getUserFromUserId, getFullUserWithoutPassword } = require('./common');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  console.log(req.headers);
-  try {
-    console.log(req.user);
-    if (!req.user) {
-      return res.status(200).json(null);
+router.post('/login', isNotLoggedIn, (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (!user) {
+      return next('user null');
     }
-    const fullUserWithoutPassword = await getFullUserWithoutPassword(
-      req.user.id,
+    if (info) {
+      return res.status(401).send(info.reason);
+    }
+    return req.login(user, async (loginErr) => {
+      if (loginErr) {
+        console.error('' + loginErr);
+        return next(loginErr);
+      }
+      const fullUserWithoutPassword = await getFullUserWithoutPassword(user.id);
+
+      if (!fullUserWithoutPassword) {
+        return res.status(200).json(user);
+      }
+      return res.status(200).json(fullUserWithoutPassword);
+    });
+  })(req, res, next);
+});
+
+router.post('/logout', isLoggedIn, (req, res, next) => {
+  req.logout();
+  req.session.destroy();
+  res.status(200).send('ok');
+});
+
+router.patch('/nickname', isLoggedIn, async (req, res, next) => {
+  try {
+    await User.update(
+      {
+        nickname: req.body.nickname,
+      },
+      {
+        where: { id: req.user.id },
+      },
     );
-    res.status(200).json(fullUserWithoutPassword);
-  } catch (err) {
-    console.error(err);
-    next(err);
+    res.status(200).json({ nickname: req.body.nickname });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+  res.json({ id: 1 });
+});
+
+router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await getUserFromUserId(req.params.userId);
+
+    if (!user) {
+      res.status(403).send('해당 유저가 존재하지 않습니다.');
+    }
+    await user.removeFollowings(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId) });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 });
 
-router.get('/:userId', async (req, res, next) => {
+router.get('/followers', isLoggedIn, async (req, res, next) => {
   try {
-    const fullUserWithoutPassword = await getFullUserWithoutPassword(
-      req.params.userId,
-    );
-    if (!fullUserWithoutPassword) {
-      return res.status(404).send('존재하지 않는 사용자 입니다.');
+    if (!req.user) {
+      return res.status(200).json(null);
     }
-    res.status(200).json(fullUserWithoutPassword);
-  } catch (err) {
-    console.error(err);
-    next(err);
+
+    const user = await getUserFromUserId(req.user.id);
+
+    if (!user) {
+      res.status(403).send('해당 유저가 존재하지 않습니다.');
+    }
+
+    console.log('limit@@@@@@');
+    console.log(parseInt(req.query.limit, 10));
+    const followers = await user.getFollowers({
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
+  res.json({ id: 1 });
+});
+
+router.get('/followings', isLoggedIn, async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(200).json(null);
+    }
+    const user = await getUserFromUserId(req.user.id);
+
+    if (!user) {
+      res.status(403).send('해당 유저가 존재하지 않습니다.');
+    }
+
+    console.log('limit@@@@@@');
+    console.log(parseInt(req.query.limit, 10));
+
+    const followings = await user.getFollowings({
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+  res.json({ id: 1 });
 });
 
 router.get('/:userId/posts', async (req, res, next) => {
@@ -94,53 +174,6 @@ router.get('/:userId/posts', async (req, res, next) => {
   }
 });
 
-router.post('/login', isNotLoggedIn, (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (!user) {
-      return next('user null');
-    }
-    if (info) {
-      return res.status(401).send(info.reason);
-    }
-    return req.login(user, async (loginErr) => {
-      if (loginErr) {
-        console.error('' + loginErr);
-        return next(loginErr);
-      }
-      const fullUserWithoutPassword = await getFullUserWithoutPassword(user.id);
-
-      if (!fullUserWithoutPassword) {
-        return res.status(200).json(user);
-      }
-      return res.status(200).json(fullUserWithoutPassword);
-    });
-  })(req, res, next);
-});
-
-router.post('/logout', isLoggedIn, (req, res, next) => {
-  req.logout();
-  req.session.destroy();
-  res.status(200).send('ok');
-});
-
-router.patch('/nickname', isLoggedIn, async (req, res, next) => {
-  try {
-    await User.update(
-      {
-        nickname: req.body.nickname,
-      },
-      {
-        where: { id: req.user.id },
-      },
-    );
-    res.status(200).json({ nickname: req.body.nickname });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-  res.json({ id: 1 });
-});
-
 router.patch('/:userId/follow', isLoggedIn, async (req, res, next) => {
   try {
     const user = await getUserFromUserId(req.params.userId);
@@ -172,59 +205,32 @@ router.delete('/:userId/follow', isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
   try {
-    const user = await getUserFromUserId(req.params.userId);
-
-    if (!user) {
-      res.status(403).send('해당 유저가 존재하지 않습니다.');
+    const fullUserWithoutPassword = await getFullUserWithoutPassword(req.params.userId);
+    if (!fullUserWithoutPassword) {
+      return res.status(404).send('존재하지 않는 사용자 입니다.');
     }
-    await user.removeFollowings(req.user.id);
-    res.status(200).json({ UserId: parseInt(req.params.userId) });
-  } catch (error) {
-    console.error(error);
-    next(error);
+    res.status(200).json(fullUserWithoutPassword);
+  } catch (err) {
+    console.error(err);
+    next(err);
   }
 });
 
-router.get('/followers', isLoggedIn, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
+  console.log(req.headers);
   try {
+    console.log(req.user);
     if (!req.user) {
       return res.status(200).json(null);
     }
-
-    const user = await getUserFromUserId(req.user.id);
-
-    if (!user) {
-      res.status(403).send('해당 유저가 존재하지 않습니다.');
-    }
-
-    const followers = await user.getFollowers();
-    res.status(200).json(followers);
-  } catch (error) {
-    console.error(error);
-    next(error);
+    const fullUserWithoutPassword = await getFullUserWithoutPassword(req.user.id);
+    res.status(200).json(fullUserWithoutPassword);
+  } catch (err) {
+    console.error(err);
+    next(err);
   }
-  res.json({ id: 1 });
-});
-
-router.get('/followings', isLoggedIn, async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.status(200).json(null);
-    }
-    const user = await getUserFromUserId(req.user.id);
-
-    if (!user) {
-      res.status(403).send('해당 유저가 존재하지 않습니다.');
-    }
-    const followings = await user.getFollowings();
-    res.status(200).json(followings);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-  res.json({ id: 1 });
 });
 
 router.post('/', isNotLoggedIn, async (req, res, next) => {

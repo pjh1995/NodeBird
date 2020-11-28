@@ -138,6 +138,7 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case ADD_POST.SUCCESS: {
+        console.log(action.data);
         draft.mainPosts.unshift(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
@@ -156,9 +157,7 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case REMOVE_POST.SUCCESS: {
-        draft.mainPosts = state.mainPosts.filter(
-          (v) => v.id !== action.data.PostId,
-        );
+        draft.mainPosts = state.mainPosts.filter((v) => v.id !== action.data.PostId);
         console.log(draft.mainPosts);
         draft.removePostLoading = false;
         draft.removePostDone = true;
@@ -176,9 +175,7 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case ADD_COMMENT.SUCCESS: {
-        const targetPost = draft.mainPosts.find(
-          (v) => v.id === action.data.PostId,
-        );
+        const targetPost = draft.mainPosts.find((v) => v.id === action.data.PostId);
         targetPost.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
@@ -196,9 +193,7 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case LIKE_POST.SUCCESS: {
-        const targetPost = draft.mainPosts.find(
-          (v) => v.id === action.data.PostId,
-        );
+        const targetPost = draft.mainPosts.find((v) => v.id === action.data.PostId);
         targetPost.Likers.push({ id: action.data.UserId });
         draft.likePostLoading = false;
         draft.likePostDone = true;
@@ -216,12 +211,8 @@ const reducer = (state = initialState, action) => {
         break;
       }
       case UN_LIKE_POST.SUCCESS: {
-        const targetPost = draft.mainPosts.find(
-          (v) => v.id === action.data.PostId,
-        );
-        targetPost.Likers = targetPost.Likers.filter(
-          (v) => v.id !== action.data.UserId,
-        );
+        const targetPost = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        targetPost.Likers = targetPost.Likers.filter((v) => v.id !== action.data.UserId);
         draft.unLikePostLoading = false;
         draft.unLikePostDone = true;
         break;
