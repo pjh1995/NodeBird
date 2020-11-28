@@ -70,6 +70,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
     await context.store.sagaTask.toPromise(); // success될때까지 기다려줌.
     // return { props: { data: 123 } }; // 서버쪽에서 받은거를 return 하여 컴포넌트로 전달
   },
-); // 페이지가 그려지기 전 실행 됨.
+); // 페이지가 그려지기 전 실행 됨..
 
 export default Home;
