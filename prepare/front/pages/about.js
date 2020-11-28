@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import Head from 'next/head';
 import { END } from 'redux-saga';
 
-import { Card } from 'antd';
 import AppLayout from '../components/AppLayout';
-import CustomAvatar from '../components/CustomAvatar';
+import UserCard from '../components/UserCard';
 
 import wrapper from '../store/configureStore';
 import { LOAD_USER } from '../reducers/user';
@@ -18,33 +17,7 @@ const About = () => {
       <Head>
         <title>내 프로필 | NodeBird</title>
       </Head>
-      {userInfo ? (
-        <Card
-          actions={[
-            <div key="twit">
-              짹짹
-              <br />
-              {userInfo.Posts ? userInfo.Posts.length : 0}
-            </div>,
-            <div key="followings">
-              팔로잉
-              <br />
-              {userInfo.Followings ? userInfo.Followings.length : 0}
-            </div>,
-            <div key="follower">
-              팔로워
-              <br />
-              {userInfo.Followers ? userInfo.Followers.length : 0}
-            </div>,
-          ]}
-        >
-          <Card.Meta
-            avatar={<CustomAvatar User={userInfo} />}
-            title={userInfo.nickname}
-            description="노드버드 매니아"
-          />
-        </Card>
-      ) : null}
+      {userInfo ? <UserCard User={userInfo} /> : null}
     </AppLayout>
   );
 };
