@@ -2,7 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
 import { Button, Card, Popover, List, Comment } from 'antd';
 import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined, HeartTwoTone } from '@ant-design/icons';
@@ -16,7 +17,7 @@ import CustomAvatar from './CustomAvatar';
 
 import { REMOVE_POST, LIKE_POST, UN_LIKE_POST, RETWEET_POST } from '../reducers/post';
 
-moment.locale('ko');
+dayjs.locale('ko');
 
 const PostCardStyled = styled.div`
   margin-bottom: 20px;
@@ -115,7 +116,7 @@ const PostCard = ({ post }) => {
           <Card
             cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} content={post.Retweet.content} />}
           >
-            <div className="date">{moment(post.Retweet.createdAt).format('YYYY.MM.DD')}</div>
+            <div className="date">{dayjs(post.Retweet.createdAt).format('YYYY.MM.DD')}</div>
             <Card.Meta
               avatar={<CustomAvatar User={post.Retweet.User} />}
               title={post.Retweet.User.nickname}
@@ -124,7 +125,7 @@ const PostCard = ({ post }) => {
           </Card>
         ) : (
           <>
-            <div className="date">{moment(post.createdAt).format('YYYY.MM.DD')}</div>
+            <div className="date">{dayjs(post.createdAt).format('YYYY.MM.DD')}</div>
             <Card.Meta
               avatar={<CustomAvatar User={post.User} />}
               title={post.User.nickname}

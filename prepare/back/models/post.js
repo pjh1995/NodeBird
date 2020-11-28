@@ -1,23 +1,30 @@
-module.exports = (sequelize, DataTypes) => {
-  const Post = sequelize.define(
-    'Post',
-    {
-      //MYSQL에서 Posts 테이블 생성
-      content: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+const DataTypes = require('sequelize');
+const { Model } = DataTypes;
+
+module.exports = class Post extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        //MYSQL에서 Posts 테이블 생성
+        content: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        state: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: true,
+        },
       },
-      state: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
+      {
+        modelName: 'Post',
+        tableName: 'posts',
+        chatset: 'utf8mb4',
+        collate: 'utf8mb4_general_ci', //이모티콘 저장
+        sequelize,
       },
-    },
-    {
-      chatset: 'utf8mb4',
-      collate: 'utf8mb4_general_ci', //이모티콘 저장
-    },
-  );
-  Post.associate = (db) => {
+    );
+  }
+  static associate(db) {
     db.Post.belongsTo(db.User); //post는 하나의 user에 속해있음, belongsTo를 해놓으면 UserId(foreignKey) 컬럼이 생김.
     db.Post.hasMany(db.Comment); //post 하나에 여러 comment가 달릴 수 있음.
     db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' }); //post와 hashtag모두 여러개가 속할 수 있음,
@@ -25,6 +32,5 @@ module.exports = (sequelize, DataTypes) => {
     //post.addLikers, post.removeLikers 가 생김
     db.Post.belongsTo(db.Post, { as: 'Retweet' });
     db.Post.hasMany(db.Image);
-  };
-  return Post;
+  }
 };

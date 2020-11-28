@@ -14,7 +14,7 @@ router.get('/:hashtag', async (req, res, next) => {
     }
     const posts = await Post.findAll({
       where,
-      limit: 10, //갯수
+      limit: 10, //갯수.
       //   offset: 100, //구간
       order: [
         ['createdAt', 'DESC'],
