@@ -78,7 +78,7 @@ app.use('/user', userRouter);
 
 // });
 
-app.get('/', (res, req) => {
+app.get('/', (req, res) => {
   res.send('hello express');
 });
 
