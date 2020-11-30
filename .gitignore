@@ -16,3 +16,6 @@ package-lock.json
 
 #uploads
 uploads/
+
+#key
+*.pem
