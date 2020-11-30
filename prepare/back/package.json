@@ -23,7 +23,8 @@
     "nodemon": "^2.0.6"
   },
   "scripts": {
-    "dev": "nodemon app"
+    "dev": "nodemon app",
+    "start": "node app"
   },
   "keywords": [],
   "author": "",
