@@ -8,6 +8,8 @@ const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const path = require('path');
+const helmet = require('helmet');
+const hpp = require('hpp');
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
@@ -27,14 +29,21 @@ db.sequelize
   .catch(console.error);
 passportConfig();
 
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined')); //접속자정보를 좀더 자세히 알 수 있음.
+  app.use(hpp());
+  app.use(helmet());
+} else {
+  app.use(morgan('dev'));
+}
+
 app.use(
   cors({
-    origin: 'http://localhost:8080',
+    origin: ['http://localhost:8080', 'nodebird.com'],
     credentials: true,
   }),
 );
 app.use('/', express.static(path.join(__dirname, 'uploads')));
-app.use(morgan('dev'));
 app.use(express.json()); //json 파싱
 app.use(express.urlencoded({ extended: true })); //form 형식 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -68,6 +77,10 @@ app.use('/user', userRouter);
 // app.use((err, req, res, next) => {
 
 // });
+
+app.get('/', (res, req) => {
+  res.send('hello express');
+});
 
 app.listen(PORT, () => {
   console.log(`${PORT} start`);

@@ -25,3 +25,6 @@
 `process.env.ANALYZE=true process.env.NODE_ENV=production`
 
 `cross-env :: process.env 변경을 윈도우에서 하려면 사용해야함`
+
+`pm2 start app 터미널이 꺼져도 서버는 살아있음 (백그라운드 프로세스)`
+`node app" 터미널이 꺼지면 서버도 나가리 (포그라운드 프로세스)`
