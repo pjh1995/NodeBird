@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(
   cors({
-    origin: ['http://localhost:8080', 'nodebird.com', 'http://13.125.239.23'],
+    origin: ['http://localhost:80', 'http://fatcat.ga'],
     credentials: true,
   }),
 );
@@ -52,6 +52,11 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      domain: process.env.NODE_ENV === 'production' && '.fatcat.ga',
+    },
   }),
 );
 app.use(passport.initialize());
