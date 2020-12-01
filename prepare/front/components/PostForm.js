@@ -3,6 +3,7 @@ import React, { useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ADD_POST, UPLOAD_IMAGES, REMOVE_IMAGE } from '../reducers/post';
 import useInput from '../hooks/useInput';
+import { backUrl } from '../config/config';
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -59,26 +60,10 @@ const PostForm = () => {
   });
 
   return (
-    <Form
-      style={{ margin: '10px 0 20px' }}
-      encType="multipart/form-data"
-      onFinish={onSubmit}
-    >
-      <Input.TextArea
-        value={text}
-        onChange={onChangeText}
-        maxLength={140}
-        placeholder="어떤 신기한 일 이 있었나요?"
-      />
+    <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmit}>
+      <Input.TextArea value={text} onChange={onChangeText} maxLength={140} placeholder="어떤 신기한 일 이 있었나요?" />
       <div>
-        <input
-          type="file"
-          name="image"
-          multiple
-          hidden
-          ref={imageInput}
-          onChange={onChangeImages}
-        />
+        <input type="file" name="image" multiple hidden ref={imageInput} onChange={onChangeImages} />
         <Button onClick={onClickImageUpload}>이미지 업로드</Button>
         <Button type="primary" style={{ float: 'right' }} htmlType="submit">
           게시글 작성
@@ -87,11 +72,7 @@ const PostForm = () => {
       <div>
         {imagePaths.map((v, i) => (
           <div key={v} style={{ display: 'inline-block' }}>
-            <img
-              src={`http://localhost:3065/${v}`}
-              style={{ width: '200px' }}
-              alt={v}
-            />
+            <img src={`${backUrl}/${v}`} style={{ width: '200px' }} alt={v} />
             <div>
               <Button onClick={onRemoveImage(i)}>제거</Button>
             </div>

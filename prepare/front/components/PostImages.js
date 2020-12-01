@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { PlusOutlined } from '@ant-design/icons';
 import ImagesZoom from './ImagesZoom';
+import { backUrl } from '../config/config';
 
 const PostImages = ({ images, content }) => {
   const [showImagesZoom, setShowImageszoom] = useState(false);
@@ -15,7 +16,7 @@ const PostImages = ({ images, content }) => {
     return (
       <img
         role="presentation"
-        src={`http://localhost:3065/${src}`}
+        src={`${backUrl}/${src}`}
         alt={content}
         width={`${width}%`}
         height="100%"

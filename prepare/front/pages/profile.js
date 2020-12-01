@@ -13,6 +13,8 @@ import FollowList from '../components/FollowList';
 import { LOAD_MY_INFO } from '../reducers/user';
 import wrapper from '../store/configureStore';
 
+import { backUrl } from '../config/config';
+
 const fetcher = (url) => axios.get(url, { withCredentials: true }).then((result) => result.data);
 const LIMIT_NUM = 3;
 const Profile = () => {
@@ -23,11 +25,11 @@ const Profile = () => {
 
   const { data: followersData, error: followerError } = useSWR(
     // redux 대신 사용가능
-    `http://localhost:3065/user/followers?limit=${followersLimit}`,
+    `${backUrl}/user/followers?limit=${followersLimit}`,
     fetcher,
   );
   const { data: followingsData, error: followingError } = useSWR(
-    `http://localhost:3065/user/followings?limit=${followingsLimit}`,
+    `${backUrl}/user/followings?limit=${followingsLimit}`,
     fetcher,
   );
 
