@@ -63,7 +63,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 /*
-    app.get -> 가져오다~
+    app.get -> 가져오다!!
     app.post -> 생성하다
     app.put => 전체 수정
     app.delete -> 제거
